@@ -1,11 +1,44 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// to format file: in src folder, run npx prisma format
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"] //allows use of multiple postgres schemas
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public", "social"]
+}
+
+// In general, "varchar" is used when the length of the string data is known and it is relatively short. "Text" is used for longer strings or when the length of the string is not known.
+
+model User {
+  id          Int      @id @default(autoincrement()) //@id: pk
+  username    String   @unique @db.VarChar(50)
+  email       String   @unique @db.VarChar(45)
+  password    String   @db.VarChar(400)
+  name        String   @db.VarChar(50)
+  cover_pic   String?  @db.VarChar(200)
+  profile_pic String?  @db.VarChar(200)
+  city        String?  @db.VarChar(50)
+  website     String?  @db.VarChar(50)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  posts       Post[]
+
+  @@schema("social")
+}
+
+model Post {
+  id      Int     @id @default(autoincrement())
+  desc    String? @db.VarChar(400)
+  img     String? @db.VarChar(400)
+  user_id Int
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade) //fields: the user_id in this table references id in the User table
+  // prisma sets onDelete to RESTRICT by default
+
+  @@schema("social")
 }

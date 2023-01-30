@@ -14,7 +14,7 @@
   "keywords": [],
   "author": "Jason Johnson",
   "license": "ISC",
-  "prisma": "src/prisma/schema.prisma",
+  "prisma": "./src/prisma/schema.prisma",
   "dependencies": {
     "@types/express-session": "^1.17.5",
     "@prisma/client": "^4.9.0",

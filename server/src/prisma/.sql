@@ -20,5 +20,8 @@ CREATE "social"."stories"("id" serial NOT NULL, "img" varchar(400) NOT NULL, "us
 --create relationships table - join table for "User" to "User" many to many relationship
 CREATE TABLE "social"."relationships"("id" serial NOT NULL, "follower_user_id" INT NOT NULL, "followed_user_id" INT NOT NULL, PRIMARY KEY("id"), CONSTRAINT "follower_user" FOREIGN KEY("follower_user_id") REFERENCES "social"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE, CONSTRAINT "follwed_user" FOREIGN KEY("followed_user_id") REFERENCES "social"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE);
 
+--note: here is the sql generated if using combo of follower and followed id to generate primary key:
+CONSTRAINT "relationships_pkey" PRIMARY KEY ("follower_user_id","followed_user_id")
+
 --create likes table
 CREATE TABLE "social"."likes"("id" serial NOT NULL, "user_id" INT NOT NULL, "post_id" NOT NULL, PRIMARY KEY("id"), CONSTRAINT "user_id" FOREIGN KEY("user_id") REFERENCES "social"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE, CONSTRAINT "post_id" FOREIGN KEY("post_id") REFERENCES "social"."posts"("id") ON DELETE CASCADE ON UPDATE CASCADE);

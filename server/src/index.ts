@@ -2,8 +2,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
-import { COOKIE_NAME, __prod__ } from './utils/constants';
+import commentRouter from './routes/comments';
+import likeRouter from './routes/likes';
+import postRouter from './routes/posts';
 import userRouter from './routes/users';
+import { COOKIE_NAME, __prod__ } from './utils/constants';
 dotenv.config({ path: '../.env' });
 
 const PORT = process.env.PORT || 3000;
@@ -35,7 +38,10 @@ const main = async () => {
   );
 
   app.use('/api/users', userRouter);
-  
+  app.use('/api/posts', postRouter);
+  app.use('/api/comments', commentRouter);
+  app.use('/api/likes', likeRouter);
+
   app.listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${process.env.NODE_ENV} mode`);
   });

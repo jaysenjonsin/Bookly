@@ -60,6 +60,15 @@ CREATE TABLE "social"."Relationship" (
     CONSTRAINT "Relationship_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "social"."Like" (
+    "id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "post_id" INTEGER NOT NULL,
+
+    CONSTRAINT "Like_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "social"."User"("username");
 
@@ -79,7 +88,13 @@ ALTER TABLE "social"."Comment" ADD CONSTRAINT "Comment_user_id_fkey" FOREIGN KEY
 ALTER TABLE "social"."Story" ADD CONSTRAINT "Story_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "social"."User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "social"."Relationship" ADD CONSTRAINT "Relationship_follower_user_id_fkey" FOREIGN KEY ("follower_user_id") REFERENCES "social"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "social"."Relationship" ADD CONSTRAINT "Relationship_follower_user_id_fkey" FOREIGN KEY ("follower_user_id") REFERENCES "social"."User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "social"."Relationship" ADD CONSTRAINT "Relationship_followed_user_id_fkey" FOREIGN KEY ("followed_user_id") REFERENCES "social"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "social"."Relationship" ADD CONSTRAINT "Relationship_followed_user_id_fkey" FOREIGN KEY ("followed_user_id") REFERENCES "social"."User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "social"."Like" ADD CONSTRAINT "Like_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "social"."User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "social"."Like" ADD CONSTRAINT "Like_post_id_fkey" FOREIGN KEY ("post_id") REFERENCES "social"."Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;

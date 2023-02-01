@@ -4,7 +4,7 @@
 // to format file: in src folder, run npx prisma format
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema"] //allows use of multiple postgres schemas
+  previewFeatures = ["multiSchema"] //allows use of multiple postgres schemas --> using since we are using "social" schema instead of default "public"
 }
 
 datasource db {
@@ -17,7 +17,7 @@ datasource db {
 
 model User {
   id          Int            @id @default(autoincrement()) //@id: pk
-  username    String         @unique @db.VarChar(50)
+  username    String         @unique @db.VarChar(50)  //just putting String -> prisma defaults to text data type. @db.VarChar changes to varchar
   email       String         @unique @db.VarChar(45)
   password    String         @db.VarChar(400)
   name        String         @db.VarChar(50)
@@ -30,6 +30,7 @@ model User {
   posts       Post[]
   comments    Comment[]
   stories     Story[]
+  likes       Like[]
   followers   Relationship[] @relation("follower")
   followed    Relationship[] @relation("followed")
 
@@ -46,6 +47,7 @@ model Post {
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   comments   Comment[]
+  likes      Like[]
 
   @@schema("social")
 }
@@ -81,6 +83,16 @@ model Relationship {
   followed         User @relation("followed", fields: [followed_user_id], references: [id], onDelete: Cascade)
 
   //alternative: instead of id use: @@id([followerId, followingId]). this generates unique id based on follower and following 
+
+  @@schema("social")
+}
+
+model Like {
+  id      Int  @id @default(autoincrement())
+  user_id Int
+  post_id Int
+  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post    Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
 
   @@schema("social")
 }

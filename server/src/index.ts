@@ -2,6 +2,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
+import commentRouter from './routes/comments';
+import likeRouter from './routes/likes';
+import postRouter from './routes/posts';
+import userRouter from './routes/users';
 import { COOKIE_NAME, __prod__ } from './utils/constants';
 dotenv.config({ path: '../.env' });
 
@@ -28,10 +32,16 @@ const main = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365,
         httpOnly: true,
         sameSite: 'lax',
-        secure: __prod__, 
+        secure: __prod__,
       },
     })
   );
+
+  app.use('/api/users', userRouter);
+  app.use('/api/posts', postRouter);
+  app.use('/api/comments', commentRouter);
+  app.use('/api/likes', likeRouter);
+
   app.listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${process.env.NODE_ENV} mode`);
   });

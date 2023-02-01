@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
 import { COOKIE_NAME, __prod__ } from './utils/constants';
+import userRouter from './routes/users';
 dotenv.config({ path: '../.env' });
 
 const PORT = process.env.PORT || 3000;
@@ -28,10 +29,13 @@ const main = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365,
         httpOnly: true,
         sameSite: 'lax',
-        secure: __prod__, 
+        secure: __prod__,
       },
     })
   );
+
+  app.use('/api/users', userRouter);
+  
   app.listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${process.env.NODE_ENV} mode`);
   });

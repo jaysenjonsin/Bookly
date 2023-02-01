@@ -4,7 +4,7 @@
 // to format file: in src folder, run npx prisma format
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema"] //allows use of multiple postgres schemas
+  previewFeatures = ["multiSchema"] //allows use of multiple postgres schemas --> using since we are using "social" schema instead of default "public"
 }
 
 datasource db {
@@ -16,29 +16,83 @@ datasource db {
 // In general, "varchar" is used when the length of the string data is known and it is relatively short. "Text" is used for longer strings or when the length of the string is not known.
 
 model User {
-  id          Int      @id @default(autoincrement()) //@id: pk
-  username    String   @unique @db.VarChar(50)
-  email       String   @unique @db.VarChar(45)
-  password    String   @db.VarChar(400)
-  name        String   @db.VarChar(50)
-  cover_pic   String?  @db.VarChar(200)
-  profile_pic String?  @db.VarChar(200)
-  city        String?  @db.VarChar(50)
-  website     String?  @db.VarChar(50)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id          Int            @id @default(autoincrement()) //@id: pk
+  username    String         @unique @db.VarChar(50)  //just putting String -> prisma defaults to text data type. @db.VarChar changes to varchar
+  email       String         @unique @db.VarChar(45)
+  password    String         @db.VarChar(400)
+  name        String         @db.VarChar(50)
+  cover_pic   String?        @db.VarChar(200)
+  profile_pic String?        @db.VarChar(200)
+  city        String?        @db.VarChar(50)
+  website     String?        @db.VarChar(50)
+  created_at  DateTime       @default(now()) //SQL generated is TIMESTAMP(3), meaning this is of data type timestamp with 3 decimal precision
+  updated_at  DateTime       @updatedAt
   posts       Post[]
+  comments    Comment[]
+  stories     Story[]
+  likes       Like[]
+  followers   Relationship[] @relation("follower")
+  followed    Relationship[] @relation("followed")
 
   @@schema("social")
 }
 
 model Post {
-  id      Int     @id @default(autoincrement())
-  desc    String? @db.VarChar(400)
-  img     String? @db.VarChar(400)
-  user_id Int
-  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade) //fields: the user_id in this table references id in the User table
+  id         Int       @id @default(autoincrement())
+  desc       String    @db.VarChar(400)
+  img        String?   @db.VarChar(400)
+  user_id    Int
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade) //user id field references id in User
   // prisma sets onDelete to RESTRICT by default
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  comments   Comment[]
+  likes      Like[]
+
+  @@schema("social")
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  desc       String   @db.VarChar(400)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user_id    Int
+  post_id    Int
+  Post       Post     @relation(fields: [post_id], references: [id], onDelete: Cascade) //when post is deleted, delete comment
+  User       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@schema("social")
+}
+
+model Story {
+  id      Int    @id @default(autoincrement())
+  img     String @db.VarChar(400)
+  user_id Int
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@schema("social")
+}
+
+//join table for "User" and "User" : follower and following relationship
+model Relationship {
+  id               Int  @id @default(autoincrement())
+  follower_user_id Int
+  followed_user_id Int
+  follower         User @relation("follower", fields: [follower_user_id], references: [id], onDelete: Cascade)
+  followed         User @relation("followed", fields: [followed_user_id], references: [id], onDelete: Cascade)
+
+  //alternative: instead of id use: @@id([followerId, followingId]). this generates unique id based on follower and following 
+
+  @@schema("social")
+}
+
+model Like {
+  id      Int  @id @default(autoincrement())
+  user_id Int
+  post_id Int
+  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post    Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
 
   @@schema("social")
 }

@@ -21,14 +21,14 @@ const main = async () => {
   app.use(
     session({
       name: COOKIE_NAME,
-      saveUninitialized: false, //only saves session when there is data to store
-      resave: false,
+      saveUninitialized: false, //only saves session when there is data to store = false
+      resave: false, //only resave session if it is modified
       secret: process.env.SESSION_SECRET || 'secret',
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365,
         httpOnly: true,
         sameSite: 'lax',
-        secure: __prod__, //https in prod
+        secure: __prod__, 
       },
     })
   );

@@ -63,6 +63,7 @@ model Comment {
   post_id    Int
   Post       Post     @relation(fields: [post_id], references: [id], onDelete: Cascade) //when post is deleted, delete comment
   User       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  likes      Like[]
 
   @@map("comments")
   @@schema("social")
@@ -92,11 +93,13 @@ model Relationship {
 }
 
 model Like {
-  id      Int  @id @default(autoincrement())
-  user_id Int
-  post_id Int
-  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  post    Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  id         Int     @id @default(autoincrement())
+  user_id    Int
+  post_id    Int
+  comment_id Int
+  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post       Post    @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  comment    Comment @relation(fields: [comment_id], references: [id], onDelete: Cascade)
 
   @@map("likes")
   @@schema("social")

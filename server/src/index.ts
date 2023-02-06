@@ -1,23 +1,27 @@
+import { PrismaClient } from '@prisma/client';
 import connectRedis from 'connect-redis';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
 import Redis from 'ioredis';
+import authRouter from './routes/auth';
 import commentRouter from './routes/comments';
 import likeRouter from './routes/likes';
 import postRouter from './routes/posts';
 import userRouter from './routes/users';
 
 import { COOKIE_NAME, __prod__ } from './utils/constants';
-dotenv.config({ path: '../.env' });
 
+dotenv.config({ path: '../.env' });
 const PORT = process.env.PORT || 3000;
+
+export const prisma = new PrismaClient();
 
 const main = async () => {
   //start redis server with: redis-server
   const RedisStore = connectRedis(session); //configure redis so that it can use express session
-  const redis = new Redis(); //create redis client
+  const redis = new Redis(); //create ioredis client
 
   const app = express();
   app.use(express.json());
@@ -48,6 +52,7 @@ const main = async () => {
     })
   );
 
+  app.use('/api/auth', authRouter);
   app.use('/api/users', userRouter);
   app.use('/api/posts', postRouter);
   app.use('/api/comments', commentRouter);

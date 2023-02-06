@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 
 // to format file: in src folder, run npx prisma format
 generator client {
@@ -13,7 +12,8 @@ datasource db {
   schemas  = ["public", "social"]
 }
 
-// In general, "varchar" is used when the length of the string data is known and it is relatively short. "Text" is used for longer strings or when the length of the string is not known.
+
+//NOTE: when modifying scehma, make sure to run npx prisma generate to generate a version of prisma client tailored to models - better autocomplete
 
 model User {
   id          Int            @id @default(autoincrement()) //@id: pk

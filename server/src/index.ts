@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import connectRedis from 'connect-redis';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import Redis from 'ioredis';
 import authRouter from './routes/auth';
@@ -16,7 +16,9 @@ import { COOKIE_NAME, __prod__ } from './utils/constants';
 dotenv.config({ path: '../.env' });
 const PORT = process.env.PORT || 3000;
 
-export const prisma = new PrismaClient();
+export const prisma = new PrismaClient({
+  log: ['query'], //log executed SQL
+});
 
 const main = async () => {
   //start redis server with: redis-server
@@ -40,8 +42,8 @@ const main = async () => {
         client: redis,
         disableTouch: true, //prevents update aof session expiration time
       }),
-      saveUninitialized: false, //only saves session when there is data to store = false
-      resave: false, //only resave session if it is modified
+      saveUninitialized: true, //false: we only save session when there is data to store in it. set to true to test in postman
+      resave: false, // false: only resave session if it is modified.
       secret: process.env.SESSION_SECRET || 'secret',
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365,
@@ -58,6 +60,13 @@ const main = async () => {
   app.use('/api/comments', commentRouter);
   app.use('/api/likes', likeRouter);
 
+  app.use((_, res) => res.status(404).send('page not found'));
+
+  app.use((err: any, _: Request, res: Response, __: NextFunction) => {
+    const statusCode = res.statusCode ? res.statusCode : 500;
+    const message = err.message ? err.message : 'unknwon error occured';
+    res.status(statusCode).json({ message });
+  });
   app.listen(PORT, () => {
     console.log(`Listening on port ${PORT} in ${process.env.NODE_ENV} mode`);
   });

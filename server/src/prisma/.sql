@@ -32,4 +32,10 @@ ALTER TABLE "social"."posts" ADD CONSTRAINT "posts_user_id_fkey" FOREIGN KEY ("u
 
 --REGISTER USER
   --check if user exists
-  SELECT FROM users WHERE username = $1
+  SELECT FROM users WHERE username = $1 --then check if exists, return errors, etc
+  
+  const query = 'INSERT INTO users('username', 'email', 'password', 'name') VALUES ($1,$2,$3,$4) RETURNING *'
+
+  const values = [username, email, hashedpassword, name] --get from req.body
+  const result = await pool.query(query,values);
+  return result.rows[0];

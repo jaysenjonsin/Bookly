@@ -25,3 +25,6 @@ CONSTRAINT "relationships_pkey" PRIMARY KEY ("follower_user_id","followed_user_i
 
 --create likes table
 CREATE TABLE "social"."likes"("id" serial NOT NULL, "user_id" INT NOT NULL, "post_id" NOT NULL, PRIMARY KEY("id"), CONSTRAINT "user_id" FOREIGN KEY("user_id") REFERENCES "social"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE, CONSTRAINT "post_id" FOREIGN KEY("post_id") REFERENCES "social"."posts"("id") ON DELETE CASCADE ON UPDATE CASCADE);
+
+--example of adding foreign key after table is already created:
+ALTER TABLE "social"."posts" ADD CONSTRAINT "posts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "social"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

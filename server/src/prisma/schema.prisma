@@ -31,7 +31,7 @@ model User {
   comments    Comment[]
   stories     Story[]
   likes       Like[]
-  followers   Relationship[] @relation("follower")
+  followers   Relationship[] @relation("follower") //normally wouldnt have to put @relation field for m to n, but since this m to n is user to user we have to specify which relation is which
   followed    Relationship[] @relation("followed")
 
   @@map("users") //even though are model is named User, we can name our table in db users
@@ -44,7 +44,7 @@ model Post {
   img        String?   @db.VarChar(400)
   user_id    Int
   user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade) //user id field references id in User
-  // prisma sets onDelete to RESTRICT by default
+  // prisma sets ON DELETE to RESTRICT by default
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   comments   Comment[]
@@ -84,7 +84,7 @@ model Relationship {
   id               Int  @id @default(autoincrement())
   follower_user_id Int
   followed_user_id Int
-  follower         User @relation("follower", fields: [follower_user_id], references: [id], onDelete: Cascade)
+  follower         User @relation("follower", fields: [follower_user_id], references: [id], onDelete: Cascade) //normally wouldnt have to put "name" before fields:[] for m to n, but since this m to n is user to user we have to specify which relation is which
   followed         User @relation("followed", fields: [followed_user_id], references: [id], onDelete: Cascade)
 
   @@map("relationships")

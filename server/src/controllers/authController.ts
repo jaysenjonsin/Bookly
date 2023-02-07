@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import { prisma } from '..';
+import { excludeFields } from '../utils/excludeFields';
 import '../utils/types';
 import { validateRegister } from '../utils/validateRegister';
 
@@ -30,9 +31,9 @@ export const register = async (
     }
 
     //use findUnique for @unique fields
-    const userExists = await prisma.user.findUnique({
+    const userExists = await prisma.user.findFirst({
       where: {
-        email,
+        OR: [{ email }, { username }],
       },
     });
 
@@ -49,9 +50,12 @@ export const register = async (
         password: await bcrypt.hash(password, 10),
       },
     });
+
+    const userWithoutPassword = excludeFields(user, ['password']);
+
     //store user id session. sets cookie on user
     req.session.userId = user.id;
-    res.status(201).json({ user });
+    res.status(201).json({ userWithoutPassword });
   } catch (err) {
     console.log(err);
     return next(err);
@@ -61,16 +65,3 @@ export const register = async (
 // export const login = (req, res) => {
 //   const { username, password } = req.body;
 // };
-
-export const getAllUsers = async (
-  _: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const users = await prisma.user.findMany();
-    res.status(400).json(users);
-  } catch (err) {
-    return next(err);
-  }
-};

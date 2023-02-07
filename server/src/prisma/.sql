@@ -31,8 +31,11 @@ ALTER TABLE "social"."posts" ADD CONSTRAINT "posts_user_id_fkey" FOREIGN KEY ("u
 
 
 --REGISTER USER
-  --check if user exists
+  --check if user exists based on username
   SELECT FROM users WHERE username = $1 --then check if exists, return errors, etc
+
+  --more specific: check if user exists based on username or email
+   SELECT "social"."users"."id", "social"."users"."username", "social"."users"."email", "social"."users"."password", "social"."users"."name", "social"."users"."cover_pic", "social"."users"."profile_pic", "social"."users"."city", "social"."users"."website", "social"."users"."created_at", "social"."users"."updated_at" FROM "social"."users" WHERE ("social"."users"."email" = $1 OR "social"."users"."username" = $2) LIMIT $3 OFFSET $4 -- then check if exists, return errors, etc
   
   const query = 'INSERT INTO users('username', 'email', 'password', 'name') VALUES ($1,$2,$3,$4) RETURNING *'
 

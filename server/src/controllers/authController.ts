@@ -42,3 +42,16 @@ export const register = async (
     return next(err);
   }
 };
+
+export const getAllUsers = async (
+  _: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const users = await prisma.user.findMany();
+    res.status(400).json(users);
+  } catch (err) {
+    return next(err);
+  }
+};

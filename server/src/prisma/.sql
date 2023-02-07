@@ -39,3 +39,27 @@ ALTER TABLE "social"."posts" ADD CONSTRAINT "posts_user_id_fkey" FOREIGN KEY ("u
   const values = [username, email, hashedpassword, name] --get from req.body
   const result = await pool.query(query,values);
   return result.rows[0];
+
+
+  --CREATE USER
+  prisma:query BEGIN -- <-- start of a transaction, indicating sereis of related database operations to be executed
+prisma:query INSERT INTO "social"."users" ("username","email","password","name","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "social"."users"."id"
+prisma:query SELECT "social"."users"."id", "social"."users"."username", "social"."users"."email", "social"."users"."password", "social"."users"."name", "social"."users"."cover_pic", "social"."users"."profile_pic", "social"."users"."city", "social"."users"."website", "social"."users"."created_at", "social"."users"."updated_at" FROM "social"."users" WHERE "social"."users"."id" = $1 LIMIT $2 OFFSET $3
+prisma:query COMMIT -- <-- end of transaction
+
+--LIMIT: restricts # of rows returned by a query
+--OFFESET: skip a specified number of rows in the result set
+--user created
+user:  {
+  id: 1,
+  username: 'test',
+  email: 'test',
+  password: '$2b$10$6N3R4tAX9MNuX0EIuyFSy.dLyp9.2B/nRl42YrNFkKSFIVRKiBPjW',
+  name: 'test',
+  cover_pic: null,
+  profile_pic: null,
+  city: null,
+  website: null,
+  created_at: 2023-02-07T07:43:01.758Z,
+  updated_at: 2023-02-07T07:43:01.758Z
+}

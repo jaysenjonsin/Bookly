@@ -5,3 +5,6 @@ dist
 # Prisma
 prisma/client
 prisma/migrations
+
+#redis
+dump.rdb

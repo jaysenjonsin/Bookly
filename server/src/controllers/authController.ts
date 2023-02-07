@@ -1,7 +1,18 @@
+import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import { prisma } from '..';
-import bcrypt from 'bcrypt';
 import '../utils/types';
+import { validateRegister } from '../utils/validateRegister';
+
+export const authenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.session.userId) {
+    res.status(401).json({ message: 'Unauthorized' });
+  } else return next();
+};
 
 export const register = async (
   req: Request,
@@ -9,11 +20,14 @@ export const register = async (
   next: NextFunction
 ) => {
   const { username, email, name, password } = req.body;
+
   try {
-    if (!username || !email || !name || !password) {
+    const validated = validateRegister(username, email, name, password);
+    if (validated.errorMessage) {
       res.status(400);
-      throw new Error('please enter all required fields');
+      throw new Error(validated.errorMessage);
     }
+
     //use findUnique for @unique fields
     const userExists = await prisma.user.findUnique({
       where: {
@@ -34,14 +48,18 @@ export const register = async (
         password: await bcrypt.hash(password, 10),
       },
     });
+    //store user id session. sets cookie on user
     req.session.userId = user.id;
-    console.log('user: ', user);
-    res.json({ user });
+    res.status(201).json({ user });
   } catch (err) {
     console.log(err);
     return next(err);
   }
 };
+
+// export const login = (req, res) => {
+//   const { username, password } = req.body;
+// };
 
 export const getAllUsers = async (
   _: Request,

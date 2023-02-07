@@ -49,17 +49,11 @@ prisma:query COMMIT -- <-- end of transaction
 
 --LIMIT: restricts # of rows returned by a query
 --OFFESET: skip a specified number of rows in the result set
---user created
-user:  {
-  id: 1,
-  username: 'test',
-  email: 'test',
-  password: '$2b$10$6N3R4tAX9MNuX0EIuyFSy.dLyp9.2B/nRl42YrNFkKSFIVRKiBPjW',
-  name: 'test',
-  cover_pic: null,
-  profile_pic: null,
-  city: null,
-  website: null,
-  created_at: 2023-02-07T07:43:01.758Z,
-  updated_at: 2023-02-07T07:43:01.758Z
-}
+
+--LOGIN USER
+const q = "SELECT * FROM social.users WHERE username = $1"
+-- err checking
+--if found user, check, password
+const result = await client.query(q, [req.body.username]);
+const data = result.rows;
+const checkPassword = await bcrypt.compare(req.body.password, data[0].password);

@@ -1,7 +1,20 @@
+import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import { prisma } from '..';
-import bcrypt from 'bcrypt';
+import { excludeFields } from '../utils/excludeFields';
 import '../utils/types';
+import { validateRegister } from '../utils/validateRegister';
+
+export const authenticate = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  //check if user has signed cookie
+  if (!req.session.userId) {
+    res.status(401).json({ message: 'Unauthorized' });
+  } else return next();
+};
 
 export const register = async (
   req: Request,
@@ -9,15 +22,18 @@ export const register = async (
   next: NextFunction
 ) => {
   const { username, email, name, password } = req.body;
+
   try {
-    if (!username || !email || !name || !password) {
+    const validated = validateRegister(username, email, name, password);
+    if (validated.errorMessage) {
       res.status(400);
-      throw new Error('please enter all required fields');
+      throw new Error(validated.errorMessage);
     }
+
     //use findUnique for @unique fields
-    const userExists = await prisma.user.findUnique({
+    const userExists = await prisma.user.findFirst({
       where: {
-        email,
+        OR: [{ email }, { username }],
       },
     });
 
@@ -34,24 +50,18 @@ export const register = async (
         password: await bcrypt.hash(password, 10),
       },
     });
+
+    const userWithoutPassword = excludeFields(user, ['password']);
+
+    //store user id session. sets cookie on user
     req.session.userId = user.id;
-    console.log('user: ', user);
-    res.json({ user });
+    res.status(201).json({ userWithoutPassword });
   } catch (err) {
     console.log(err);
     return next(err);
   }
 };
 
-export const getAllUsers = async (
-  _: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const users = await prisma.user.findMany();
-    res.status(400).json(users);
-  } catch (err) {
-    return next(err);
-  }
-};
+// export const login = (req, res) => {
+//   const { username, password } = req.body;
+// };

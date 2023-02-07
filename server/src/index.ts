@@ -17,11 +17,10 @@ dotenv.config({ path: '../.env' });
 const PORT = process.env.PORT || 3000;
 
 export const prisma = new PrismaClient({
-  log: ['query'], //log executed SQL
+  log: ['query'], //log executed SQL in terminal
 });
 
 const main = async () => {
-  //start redis server with: redis-server
   const RedisStore = connectRedis(session); //configure redis so that it can use express session
   const redis = new Redis(); //create ioredis client
 
@@ -31,7 +30,7 @@ const main = async () => {
   app.use(
     cors({
       origin: 'http://localhost:3000',
-      credentials: true, //this sets Access-Control-Allow-Credentials header to true, allowing credentials (cookies, etc) to be sent to server
+      credentials: true, // sets Access-Control-Allow-Credentials header to true, allowing credentials (cookies, etc) to be sent to server
     })
   );
 
@@ -44,7 +43,7 @@ const main = async () => {
       }),
       saveUninitialized: true, //false: we only save session when there is data to store in it. set to true to test in postman
       resave: false, // false: only resave session if it is modified.
-      secret: process.env.SESSION_SECRET || 'secret',
+      secret: process.env.SESSION_SECRET ?? 'secret',
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365,
         httpOnly: true,

@@ -4,11 +4,12 @@ import { prisma } from '..';
 import '../utils/types';
 import { validateRegister } from '../utils/validateRegister';
 
-export const authenticate = async (
+export const authenticate = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  //check if user has signed cookie
   if (!req.session.userId) {
     res.status(401).json({ message: 'Unauthorized' });
   } else return next();

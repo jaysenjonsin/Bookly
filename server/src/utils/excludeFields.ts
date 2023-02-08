@@ -1,4 +1,4 @@
-//Prisma Client doesn't have a native way of excluding fields yet, but it's easy to create a function that you can use to exclude certain fields in a type-safe way.
+//Prisma Client doesn't have a native way of excluding fields yet
 
 export const excludeFields = <User, Key extends keyof User>(
   users: User | User[],

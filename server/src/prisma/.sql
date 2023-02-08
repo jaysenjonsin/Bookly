@@ -55,8 +55,10 @@ prisma:query COMMIT -- <-- end of transaction
 
 --LOGIN USER
 const q = "SELECT * FROM social.users WHERE username = $1"
--- err checking
---if found user, check, password
+--note: added conditional: if user input includes @, instead do ... WHERE email = $1
 const result = await client.query(q, [req.body.username]);
+-- then do err checking if user does not exist
+
+--if found user, check, password
 const data = result.rows;
 const checkPassword = await bcrypt.compare(req.body.password, data[0].password);

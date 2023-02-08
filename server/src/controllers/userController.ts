@@ -19,7 +19,7 @@ export const getAllUsers = async (
   try {
     const users = await prisma.user.findMany();
     const usersWithoutPassword = excludeFields(users, ['password']);
-    res.status(400).json(usersWithoutPassword);
+    res.status(200).json(usersWithoutPassword);
   } catch (err) {
     return next(err);
   }

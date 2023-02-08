@@ -30,7 +30,7 @@ export const register = async (
       throw new Error(validated.errorMessage);
     }
 
-    //use findUnique for @unique fields
+    //cannot use OR clause with findUnique
     const userExists = await prisma.user.findFirst({
       where: {
         OR: [{ email }, { username }],
@@ -57,11 +57,42 @@ export const register = async (
     req.session.userId = user.id;
     res.status(201).json({ userWithoutPassword });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return next(err);
   }
 };
 
-// export const login = (req, res) => {
-//   const { username, password } = req.body;
-// };
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { usernameOrEmail, password } = req.body;
+  try {
+    if (!usernameOrEmail || !password) {
+      res.status(400);
+      throw new Error('please enter all required fields');
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        ...(usernameOrEmail.includes('@')
+          ? { email: usernameOrEmail }
+          : { username: usernameOrEmail }),
+      },
+    });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      req.session.userId = user.id;
+      const userWithoutPassword = excludeFields(user, ['password']);
+      res.status(200).json(userWithoutPassword);
+    } else {
+      res.status(400);
+      //don't tell user whether the given user exists or not
+      throw new Error('username or password is incorrect');
+    }
+  } catch (err) {
+    console.error(err);
+    return next(err);
+  }
+};

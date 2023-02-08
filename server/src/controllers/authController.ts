@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import { prisma } from '..';
+import { COOKIE_NAME } from '../utils/constants';
 import { excludeFields } from '../utils/excludeFields';
 import '../utils/types';
 import { validateRegister } from '../utils/validateRegister';
@@ -96,3 +97,20 @@ export const login = async (
     return next(err);
   }
 };
+
+export const logout = async (req: Request, res: Response) => {
+
+  return new Promise((resolve) => {
+    req.session.destroy((err) => {
+      res.clearCookie(COOKIE_NAME);
+      if (err) {
+        console.error(err);
+        resolve(false);
+        return;
+      }
+      resolve(true);
+    });
+  });
+};
+
+//req.session.destroy takes a callback, which has an err parameter

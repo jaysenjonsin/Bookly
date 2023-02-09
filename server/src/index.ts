@@ -41,7 +41,7 @@ const main = async () => {
         client: redis,
         disableTouch: true, //prevents update of session expiration time
       }),
-      saveUninitialized: false, //false: we only save session when there is data to store in it. set to true to test in postman
+      saveUninitialized: false, //false: we only save session when there is data to store in it. 
       resave: false, // false: only resave session if it is modified.
       secret: process.env.SESSION_SECRET ?? 'secret',
       cookie: {

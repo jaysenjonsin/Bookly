@@ -1,0 +1,12 @@
+-----Why use Prisma?-----
+TypeScript support: Prisma provides TypeScript support out-of-the-box, making it easier to write type-safe code and catch errors at compile-time.
+
+Easy data modeling: Prisma provides an intuitive data modeling syntax that makes it easy to define the relationships between your data models, and generate the required SQL schema automatically.
+
+Performance: Prisma is designed for performance, with features such as connection pooling, lazy-loading, and batching, which can significantly improve the performance of your database queries.
+
+Auto-generated APIs: Prisma generates a strongly-typed API based on your data models, making it easy to interact with your database from your application code.
+
+
+----Why use backend form validation when already using RHF/Zod to validate forms in the frontend?----
+Front end validation can easily be bypassed. Backend validation is required in order to maintain consistent data that is entered into the database.

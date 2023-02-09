@@ -1,6 +1,7 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import '@/styles/globals.scss';
+import type { AppProps } from 'next/app';
 
+//_app.tsx: provides common layout and structure for pages. wraps all pages
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return <Component {...pageProps} />;
 }

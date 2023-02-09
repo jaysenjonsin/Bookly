@@ -100,6 +100,7 @@ export const login = async (
 
 export const logout = async (req: Request, res: Response) => {
   return new Promise((resolve) => {
+    //destroy the session(server) and clear the cookie(client)
     req.session.destroy((err) => {
       res.clearCookie(COOKIE_NAME);
       if (err) {

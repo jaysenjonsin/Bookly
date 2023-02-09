@@ -99,7 +99,6 @@ export const login = async (
 };
 
 export const logout = async (req: Request, res: Response) => {
-
   return new Promise((resolve) => {
     req.session.destroy((err) => {
       res.clearCookie(COOKIE_NAME);

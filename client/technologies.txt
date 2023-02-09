@@ -1,9 +1,9 @@
------why use NextJS?-----
+-----Why use NextJS?-----
 Routing: Next.js provides a simple and flexible routing system for my multipage application.
 
 Built-in optimizations: Next.js includes many built-in optimizations(automatic image optimization, automatic minification of CSS and JavaScript, etc), which improves performance.
 
------why use react-hook-form?-----
+-----Why use react-hook-form?-----
 Validation: React Hook Form provides a simpler way to handle form validation compared to traditional HTML forms. With React Hook Form, you can define your own custom validation rules and have the errors automatically displayed to the user. Form validation is also made easier through pairing with the Zod schema validation library.
 
 Controlled Components: React Hook form treats form inputs as controlled components. This means that the form state is managed within the component, making it easier to keep track of user input and handle changes.
@@ -13,3 +13,6 @@ Performance: React Hook Form is optimized for performance, so it can handle larg
 Accessibility: React Hook Form provides built-in accessibility features, such as automatically adding ARIA attributes to form elements, which can be especially helpful for users with disabilities.
 
 Reusability: React Hook Form components can be easily reused across multiple forms, making it a more flexible and scalable solution compared to traditional HTML forms.
+
+----Why use front end form validation when there is already form validation in the backend?----
+Front end validation can easily be bypassed. It is used to improve the user experience by providing feedback to the user on whether their inputs are valid. It also reduces the load on the server.

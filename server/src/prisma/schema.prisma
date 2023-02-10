@@ -31,7 +31,7 @@ model User {
   followers   Relationship[] @relation("follower") //normally wouldnt have to put @relation field for m to n, but since this m to n is user to user we have to specify which relation is which
   followed    Relationship[] @relation("followed")
 
-  @@map("users") //even though are model is named User, we can name our table in db users
+  @@map("users") //even though are model is named User, we can name our table in 'users' in the db
   @@schema("social")
 }
 

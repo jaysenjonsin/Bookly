@@ -1,10 +1,8 @@
-import React from 'react';
-import { z } from 'zod';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import styles from '@/styles/register.module.scss';
 import { zodResolver } from '@hookform/resolvers/zod'; //from @hookform/resolvers
-import axios from 'axios';
-
-type Props = {};
+import { SubmitHandler, useForm } from 'react-hook-form'; //import SubmitHandler for the type to put on our onSubmit function
+import { z } from 'zod';
+import { registerUser } from '../services/authService';
 
 const formData = z
   .object({
@@ -19,25 +17,27 @@ const formData = z
       invalid_type_error: 'Please confirm password',
     }),
   })
-  //custom validation logic using .refine
   .refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
+    path: ['confirmPassword'], //error will display on confirmPassword
     message: 'Passwords do no match',
   });
 
-type formDataType = z.infer<typeof formData>;
+export type formDataType = z.infer<typeof formData>;
 
 const onSubmit: SubmitHandler<formDataType> = async (formValues) => {
   //submitHandler takes a function, which takes in the form data
   try {
-    const { data } = await axios.post(
-      process.env.NEXT_PUBLIC_API_URL + 'login',
-      formValues
-    );
-  } catch (err) {}
+    return await registerUser(formValues);
+  } catch (err: any) {
+    const message =
+      err.response?.data?.message || err.message || err.toString();
+    console.log(message);
+  }
 };
 
-const Register = (props: Props) => {
+// type Props = {};
+
+const Register = (props: {}) => {
   const {
     register,
     handleSubmit,
@@ -53,7 +53,7 @@ const Register = (props: Props) => {
         <input
           id='name'
           type='text'
-          className='input'
+          className={styles.hello}
           placeholder='name'
           disabled={isSubmitting} //cannot change when form is submitting
           {...register('name')} //gives some props to (i.e registers) the named input: ex ref = {name} name = {name} onChange = {onchange}

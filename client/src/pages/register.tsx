@@ -31,7 +31,7 @@ const onSubmit: SubmitHandler<formDataType> = async (formValues) => {
   } catch (err: any) {
     const message =
       err.response?.data?.message || err.message || err.toString();
-    console.log(message);
+    window.alert(message);
   }
 };
 
@@ -58,6 +58,7 @@ const Register = (props: {}) => {
           disabled={isSubmitting} //cannot change when form is submitting
           {...register('name')} //gives some props to (i.e registers) the named input: ex ref = {name} name = {name} onChange = {onchange}
         />
+        {/* render error message if it exists */}
         <p className='error-message'>{errors.name?.message}</p>
 
         <input
@@ -82,7 +83,7 @@ const Register = (props: {}) => {
 
         <input
           id='password'
-          type='text'
+          type='password'
           className='input'
           placeholder='password'
           disabled={isSubmitting}
@@ -92,7 +93,7 @@ const Register = (props: {}) => {
 
         <input
           id='confirmPassword'
-          type='text'
+          type='password'
           className='input'
           placeholder='confirm password'
           disabled={isSubmitting}

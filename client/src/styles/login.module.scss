@@ -1,0 +1,32 @@
+.login {
+  //mimic behavior of body selector. note: cannot use global selectors in css modules in Next
+  height: 100vh;
+  background-image: linear-gradient(-225deg, #e3fdf5 0%, #ffe6fa 100%);
+  background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .card {
+    display: flex;
+    .left {
+      h1 {
+      }
+      p {
+      }
+      span {
+      }
+      button {
+      }
+    }
+    .right {
+      h1 {
+      }
+      form {
+        input {
+        }
+        button {
+        }
+      }
+    }
+  }
+}

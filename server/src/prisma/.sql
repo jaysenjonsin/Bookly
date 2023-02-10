@@ -45,20 +45,30 @@ ALTER TABLE "social"."posts" ADD CONSTRAINT "posts_user_id_fkey" FOREIGN KEY ("u
 
 
   --CREATE USER
-  prisma:query BEGIN -- <-- start of a transaction, indicating sereis of related database operations to be executed
-prisma:query INSERT INTO "social"."users" ("username","email","password","name","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "social"."users"."id"
-prisma:query SELECT "social"."users"."id", "social"."users"."username", "social"."users"."email", "social"."users"."password", "social"."users"."name", "social"."users"."cover_pic", "social"."users"."profile_pic", "social"."users"."city", "social"."users"."website", "social"."users"."created_at", "social"."users"."updated_at" FROM "social"."users" WHERE "social"."users"."id" = $1 LIMIT $2 OFFSET $3
-prisma:query COMMIT -- <-- end of transaction
+BEGIN -- <-- start of a transaction, indicating sereis of related database operations to be executed
+INSERT INTO "social"."users" ("username","email","password","name","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "social"."users"."id"
+SELECT "social"."users"."id", "social"."users"."username", "social"."users"."email", "social"."users"."password", "social"."users"."name", "social"."users"."cover_pic", "social"."users"."profile_pic", "social"."users"."city", "social"."users"."website", "social"."users"."created_at", "social"."users"."updated_at" FROM "social"."users" WHERE "social"."users"."id" = $1 LIMIT $2 OFFSET $3
+COMMIT -- <-- end of transaction
 
 --LIMIT: restricts # of rows returned by a query
 --OFFESET: skip a specified number of rows in the result set
 
 --LOGIN USER
-const q = "SELECT * FROM social.users WHERE username = $1"
---note: added conditional: if user input includes @, instead do ... WHERE email = $1
-const result = await client.query(q, [req.body.username]);
--- then do err checking if user does not exist
+--select everything but password
+const query = `
+    SELECT id, username, email, password, name, cover_pic, profile_pic, city, website, created_at, updated_at
+    FROM "users"
+    WHERE email = $1 OR username = $2
+    LIMIT 1
+  `;
+  const values = [usernameOrEmail, usernameOrEmail];
+  const result = await pool.query(query, values);
 
---if found user, check, password
-const data = result.rows;
-const checkPassword = await bcrypt.compare(req.body.password, data[0].password);
+--if user not found, return error
+if (result.rowCount === 0)  return { error: 'User not found' };
+
+--if user found, check their encrypted password
+const data = result.rows[0];
+const checkPassword = await bcrypt.compare(req.body.password, data.password);
+}
+--if checkPassword true, return success, else return error

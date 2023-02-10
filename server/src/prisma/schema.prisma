@@ -1,5 +1,3 @@
-
-
 // to format file: in src folder, run npx prisma format
 generator client {
   provider        = "prisma-client-js"
@@ -12,8 +10,7 @@ datasource db {
   schemas  = ["public", "social"]
 }
 
-
-//NOTE: when modifying scehma, make sure to run npx prisma generate to generate a version of prisma client tailored to models - better autocomplete
+//NOTE: when modifying schema, make sure to run npx prisma generate after to generate a version of prisma client tailored to models - better autocomplete
 
 model User {
   id          Int            @id @default(autoincrement()) //@id: pk
@@ -34,7 +31,7 @@ model User {
   followers   Relationship[] @relation("follower") //normally wouldnt have to put @relation field for m to n, but since this m to n is user to user we have to specify which relation is which
   followed    Relationship[] @relation("followed")
 
-  @@map("users") //even though are model is named User, we can name our table in db users
+  @@map("users") //even though are model is named User, we can name our table in 'users' in the db
   @@schema("social")
 }
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { z } from 'zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod'; //from @hookform/resolvers
+import axios from 'axios';
 
 type Props = {};
 
@@ -26,9 +27,14 @@ const formData = z
 
 type formDataType = z.infer<typeof formData>;
 
-const onSubmit: SubmitHandler<formDataType> = (data) => {
-  //SEND POST REQUEST TO BACKEND
-  console.log(data);
+const onSubmit: SubmitHandler<formDataType> = async (formValues) => {
+  //submitHandler takes a function, which takes in the form data
+  try {
+    const { data } = await axios.post(
+      process.env.NEXT_PUBLIC_API_URL + 'login',
+      formValues
+    );
+  } catch (err) {}
 };
 
 const Register = (props: Props) => {

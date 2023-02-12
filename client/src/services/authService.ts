@@ -1,10 +1,15 @@
 import axios from 'axios';
-import { formDataType } from '../pages/register';
-
+import login from '../pages/login';
+import { formSchemaType as registerSchemaType } from '../pages/register';
+import { formSchemaType as loginSchemaType } from '../pages/login';
 const URL = process.env.NEXT_PUBLIC_API_URL + 'auth/';
 
-export const registerUser = async (userData: formDataType) => {
+export const registerUser = async (userData: registerSchemaType) => {
   const { data } = await axios.post(URL, userData);
-  console.log('data ', data);
+  return data;
+};
+
+export const loginUser = async (userData: loginSchemaType) => {
+  const { data } = await axios.post(URL + 'login', userData);
   return data;
 };

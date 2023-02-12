@@ -3,18 +3,24 @@ import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { loginUser } from '../services/authService';
 
-const formData = z.object({
+const formSchema = z.object({
   usernameOrEmail: z
     .string()
     .min(1, { message: 'Please enter your username or email' }),
   password: z.string().min(1, { message: 'Please enter your password' }),
 });
 
-export type formDataType = z.infer<typeof formData>;
+export type formSchemaType = z.infer<typeof formSchema>;
 
-const onSubmit: SubmitHandler<formDataType> = (formInput) => {
-  console.log(formInput);
+const onSubmit: SubmitHandler<formSchemaType> = async (formInput) => {
+  try {
+    return await loginUser(formInput);
+  } catch (err: any) {
+    const message = err.response?.data.message || err.toString();
+    window.alert(message);
+  }
 };
 
 // type Props = {};
@@ -23,8 +29,8 @@ const login = (props: {}) => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<formDataType>({
-    resolver: zodResolver(formData),
+  } = useForm<formSchemaType>({
+    resolver: zodResolver(formSchema),
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +41,7 @@ const login = (props: {}) => {
     <>
       <div className={styles.login}>
         <div className={styles.card}>
-          <div className='styles left'>
+          <div className={styles.left}>
             <h1>Bookly</h1>
             <p>
               Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facilis,
@@ -45,7 +51,7 @@ const login = (props: {}) => {
             <button>Register</button>
           </div>
           <div className={styles.right}>
-            <h1>Login</h1>
+            <h1>Put logo here Oauth stuff ? </h1>
             <form onSubmit={handleSubmit(onSubmit)}>
               <input
                 type='text'
@@ -53,12 +59,17 @@ const login = (props: {}) => {
                 {...register('usernameOrEmail')}
                 disabled={isSubmitting}
               />
+              <p className={styles.errorMessage}>
+                {errors.usernameOrEmail?.message}
+              </p>
               <input
                 type='password'
                 placeholder='password'
                 {...register('password')}
                 disabled={isSubmitting}
               />
+              <p className={styles.errorMessage}>{errors.password?.message}</p>
+
               <button type='submit'>Login</button>
             </form>
           </div>

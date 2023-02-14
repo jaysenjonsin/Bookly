@@ -8,13 +8,15 @@ import { validateRegister } from '../utils/validateRegister';
 
 export const authenticate = (
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
+  // next: NextFunction
 ) => {
-  //check if user has signed cookie
+  //if (!req.session.userId) is a valid check to see if a user is authenticated because, by default, the session middleware will only create a new session if one doesn't already exist. So, if a user tries to forge a session ID, it won't match any existing session IDs on the server, and the req.session object will be empty.
   if (!req.session.userId) {
     res.status(401).json({ message: 'Unauthorized' });
-  } else return next();
+  }
+  //else return next();
+  else res.status(200).json({ message: 'Authorized' });
 };
 
 export const register = async (
@@ -56,7 +58,7 @@ export const register = async (
 
     //store user id session. sets cookie on user
     req.session.userId = user.id;
-    res.status(201).json({ userWithoutPassword });
+    res.status(201).json({ user: userWithoutPassword });
   } catch (err) {
     console.error(err);
     return next(err);
@@ -86,7 +88,7 @@ export const login = async (
     if (user && (await bcrypt.compare(password, user.password))) {
       req.session.userId = user.id;
       const userWithoutPassword = excludeFields(user, ['password']);
-      res.status(200).json(userWithoutPassword);
+      res.status(200).json({ user: userWithoutPassword });
     } else {
       res.status(400);
       //don't tell user whether the given user exists or not

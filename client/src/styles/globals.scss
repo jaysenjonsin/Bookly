@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans');
+
 /* STYLE RESET */
 /* // https://piccalil.li/blog/a-modern-css-reset */
 /* Box sizing rules */
@@ -28,6 +30,7 @@ html:focus-within {
 html,
 body {
   height: 100%;
+  font-family: 'Fira Sans', Helvetica, Arial, sans-serif;
 }
 
 /* Set core body defaults */
@@ -73,3 +76,5 @@ select {
     scroll-behavior: auto !important;
   }
 }
+// end of reset
+

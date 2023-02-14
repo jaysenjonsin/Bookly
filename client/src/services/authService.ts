@@ -5,11 +5,13 @@ import { formSchemaType as loginSchemaType } from '../pages/login';
 const URL = process.env.NEXT_PUBLIC_API_URL + 'auth/';
 
 export const registerUser = async (userData: registerSchemaType) => {
-  const { data } = await axios.post(URL, userData);
+  const { data } = await axios.post(URL, userData, { withCredentials: true }); //withCredentials: allows cookie to be set on client
   return data;
 };
 
 export const loginUser = async (userData: loginSchemaType) => {
-  const { data } = await axios.post(URL + 'login', userData);
+  const { data } = await axios.post(URL + 'login', userData, {
+    withCredentials: true,
+  });
   return data;
 };

@@ -4,6 +4,8 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginUser } from '../services/authService';
+import { useRouter } from 'next/router';
+import { GetServerSidePropsContext } from 'next';
 
 const formSchema = z.object({
   usernameOrEmail: z
@@ -12,19 +14,11 @@ const formSchema = z.object({
   password: z.string().min(1, { message: 'Please enter your password' }),
 });
 
-export type formSchemaType = z.infer<typeof formSchema>;
-
-const onSubmit: SubmitHandler<formSchemaType> = async (formInput) => {
-  try {
-    return await loginUser(formInput);
-  } catch (err: any) {
-    const message = err.response?.data.message || err.toString();
-    window.alert(message);
-  }
-};
+export type formSchemaType = z.infer<typeof formSchema>; //cannot export from inside the component
 
 // type Props = {};
 const login = (props: {}) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -32,6 +26,16 @@ const login = (props: {}) => {
   } = useForm<formSchemaType>({
     resolver: zodResolver(formSchema),
   });
+
+  const onSubmit: SubmitHandler<formSchemaType> = async (formInput) => {
+    try {
+      await loginUser(formInput);
+      router.push('/');
+    } catch (err: any) {
+      const message = err.response?.data.message || err.toString();
+      window.alert(message);
+    }
+  };
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -78,5 +82,4 @@ const login = (props: {}) => {
     </>
   );
 };
-
 export default login;

@@ -8,13 +8,15 @@ import { validateRegister } from '../utils/validateRegister';
 
 export const authenticate = (
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
+  // next: NextFunction
 ) => {
-  //check if user has signed cookie
+  //if (!req.session.userId) is a valid check to see if a user is authenticated because, by default, the session middleware will only create a new session if one doesn't already exist. So, if a user tries to forge a session ID, it won't match any existing session IDs on the server, and the req.session object will be empty.
   if (!req.session.userId) {
     res.status(401).json({ message: 'Unauthorized' });
-  } else return next();
+  }
+  //else return next();
+  else res.status(200).json({ message: 'Authorized' });
 };
 
 export const register = async (

@@ -20,6 +20,7 @@
     font-family: sans-serif;
   }
   .card {
+    overflow: hidden;
     width: 50%;
     min-height: 35rem;
     display: flex;
@@ -46,11 +47,12 @@
       span {
       }
       button {
-        width: 50%;
+        width: 60%;
         padding: 1rem;
         border: none;
         background-color: white;
         color: $color-primary-dark;
+        margin-top: 0.75rem;
       }
     }
     .right {
@@ -58,6 +60,7 @@
       padding: 3rem;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       gap: 5rem;
       h1 {
         color: $color-primary-light;
@@ -72,7 +75,7 @@
           padding: 20px 10px;
         }
         button {
-          width: 50%;
+          width: 60%;
           padding: 1rem;
           border: none;
           background-color: $color-primary-dark;

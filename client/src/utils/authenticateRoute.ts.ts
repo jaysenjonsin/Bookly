@@ -16,6 +16,7 @@ export const authenticateRoute = async (ctx: GetServerSidePropsContext) => {
         cookie: `ski=${sessionId}`,
       },
     });
+    //if authorized, proceed to route - note, dont need to pass in any props
     if (data.message === 'Authorized') {
       return { props: {} };
     } else {

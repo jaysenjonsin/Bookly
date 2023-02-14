@@ -1,9 +1,6 @@
 import Head from 'next/head';
-import Image from 'next/image';
-import { Inter } from '@next/font/google';
-import styles from '@/styles/Home.module.scss';
-
-const inter = Inter({ subsets: ['latin'] });
+import { GetServerSidePropsContext } from 'next';
+import { authenticateRoute } from '../utils/authenticateRoute.ts';
 
 //default home page
 
@@ -19,4 +16,18 @@ export default function Home() {
       <h1>hello</h1>
     </>
   );
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const response = await authenticateRoute(ctx);
+
+  if (response.redirect) {
+    return {
+      redirect: response.redirect,
+    };
+  }
+
+  return {
+    props: response.props,
+  };
 }

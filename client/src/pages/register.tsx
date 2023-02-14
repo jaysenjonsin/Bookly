@@ -1,10 +1,9 @@
-import styles from '@/styles/register.module.scss';
 import { zodResolver } from '@hookform/resolvers/zod'; //from @hookform/resolvers
 import { SubmitHandler, useForm } from 'react-hook-form'; //import SubmitHandler for the type to put on our onSubmit function
 import { z } from 'zod';
 import { registerUser } from '../services/authService';
 
-const formData = z
+const formSchema = z
   .object({
     name: z.string().min(1, { message: 'Name required' }),
     email: z
@@ -22,16 +21,15 @@ const formData = z
     message: 'Passwords do no match',
   });
 
-export type formDataType = z.infer<typeof formData>;
+export type formSchemaType = z.infer<typeof formSchema>;
 
-const onSubmit: SubmitHandler<formDataType> = async (formValues) => {
+const handleRegister: SubmitHandler<formSchemaType> = async (formValues) => {
   //submitHandler takes a function, which takes in the form data
   try {
     return await registerUser(formValues);
   } catch (err: any) {
-    const message =
-      err.response?.data?.message || err.message || err.toString();
-    console.log(message);
+    const message = err.response?.data?.message || err.toString();
+    window.alert(message);
   }
 };
 
@@ -42,22 +40,23 @@ const Register = (props: {}) => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<formDataType>({
-    resolver: zodResolver(formData),
+  } = useForm<formSchemaType>({
+    resolver: zodResolver(formSchema),
   });
 
   return (
     <>
       <div>Register</div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(handleRegister)}>
         <input
           id='name'
           type='text'
-          className={styles.hello}
+          // className={styles.hello}
           placeholder='name'
           disabled={isSubmitting} //cannot change when form is submitting
           {...register('name')} //gives some props to (i.e registers) the named input: ex ref = {name} name = {name} onChange = {onchange}
         />
+        {/* render error message if it exists */}
         <p className='error-message'>{errors.name?.message}</p>
 
         <input
@@ -82,7 +81,7 @@ const Register = (props: {}) => {
 
         <input
           id='password'
-          type='text'
+          type='password'
           className='input'
           placeholder='password'
           disabled={isSubmitting}
@@ -92,7 +91,7 @@ const Register = (props: {}) => {
 
         <input
           id='confirmPassword'
-          type='text'
+          type='password'
           className='input'
           placeholder='confirm password'
           disabled={isSubmitting}

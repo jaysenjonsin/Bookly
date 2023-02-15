@@ -8,3 +8,5 @@ prisma/migrations
 
 #redis
 dump.rdb
+
+tech.txt

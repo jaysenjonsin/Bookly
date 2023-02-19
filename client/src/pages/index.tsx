@@ -1,7 +1,10 @@
 import Head from 'next/head';
 import { GetServerSidePropsContext } from 'next';
 import { authenticateRoute } from '../utils/authenticateRoute.ts';
-
+import Header from '../components/Header';
+import LeftBar from '../components/LeftBar';
+import RightBar from '../components/RightBar';
+import Feed from '../components/Feed';
 //default home page
 
 export default function Home() {
@@ -13,7 +16,13 @@ export default function Home() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <h1>hello</h1>
+      {/* content */}
+      <Header />
+      <div style={{ display: 'flex' }}>
+        <LeftBar />
+        <Feed />
+        <RightBar />
+      </div>
     </>
   );
 }

@@ -1,0 +1,53 @@
+@import './variables.scss';
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; //space between left and right
+  padding: 0.625rem 0.625rem;
+  height: 3.125rem;
+  background-color: $color-accent;
+  border-bottom: 1px solid lightgray;
+  //top/bottom, right/left. if split into 4, it is top / right / bottom / left
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    span {
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      border: 1px solid lightgray;
+      background-color: white;
+      border-radius: 5px;
+      input {
+        border: none;
+        width: 500px;
+        border-radius: 5px;
+        padding: 5px;
+      }
+    }
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+      }
+
+      span {
+      }
+    }
+  }
+}

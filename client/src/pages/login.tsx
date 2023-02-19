@@ -1,11 +1,10 @@
 import styles from '@/styles/login.module.scss';
-import React, { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginUser } from '../services/authService';
 import { useRouter } from 'next/router';
-import { GetServerSidePropsContext } from 'next';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { loginUser } from '../services/authService';
 
 const formSchema = z.object({
   usernameOrEmail: z

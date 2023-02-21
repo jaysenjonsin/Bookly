@@ -30,6 +30,77 @@ const RightBar = (props: {}) => {
               <button>X</button>
             </div>
           </div>
+          <div className={styles.item}>
+            <span>Latest Activities</span>
+            <div className={styles.user}>
+              <div className={styles.userInfo}>
+                <Image src={profilePic} alt='profile pic' />
+                <p>
+                  <span>Jane De</span> changed their cover picture
+                </p>
+              </div>
+              <span>1 minute ago</span>
+            </div>
+            <div className={styles.user}>
+              <div className={styles.userInfo}>
+                <Image src={profilePic} alt='profile pic' />
+                <p>
+                  <span>Jane De</span> changed their cover picture
+                </p>
+              </div>
+              <span>1 minute ago</span>
+            </div>
+            <div className={styles.user}>
+              <div className={styles.userInfo}>
+                <Image src={profilePic} alt='profile pic' />
+                <p>
+                  <span>Jane De</span> changed their cover picture
+                </p>
+              </div>
+              <span>1 minute ago</span>
+            </div>
+            <div className={styles.user}>
+              <div className={styles.userInfo}>
+                <Image src={profilePic} alt='profile pic' />
+                <p>
+                  <span>Jane De</span> changed their cover picture
+                </p>
+              </div>
+              <span>1 minute ago</span>
+            </div>
+          </div>
+
+          <div className={styles.item}>
+            <span>Online</span>
+            <div className={styles.user}>
+              <div className={styles.userInfo}>
+                <Image src={profilePic} alt='profile pic' />
+                <div className={styles.online}></div>
+                <span>jane doe</span>
+              </div>
+            </div>
+            <div className={styles.user}>
+              <div className={styles.userInfo}>
+                <Image src={profilePic} alt='profile pic' />
+                <div className={styles.online}></div>
+                <span>jane doe</span>
+              </div>
+            </div>
+            <div className={styles.user}>
+              <div className={styles.userInfo}>
+                <Image src={profilePic} alt='profile pic' />
+                <div className={styles.online}></div>
+                <span>jane doe</span>
+              </div>
+            </div>
+            <div className={styles.user}>
+              <div className={styles.userInfo}>
+                <Image src={profilePic} alt='profile pic' />
+                <div className={styles.online}></div>
+                <span>jane doe</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>

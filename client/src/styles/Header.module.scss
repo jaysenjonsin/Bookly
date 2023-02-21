@@ -1,11 +1,13 @@
 @import './variables.scss';
 
 .header {
+  position: sticky;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: space-between; //space between left and right
-  padding: 0.625rem 0.625rem;
-  height: 3.125rem;
+  padding: 10px 10px;
+  height: 50px;
   background-color: $color-accent;
   border-bottom: 1px solid lightgray;
   //top/bottom, right/left. if split into 4, it is top / right / bottom / left

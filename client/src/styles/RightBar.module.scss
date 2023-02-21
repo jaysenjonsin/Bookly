@@ -1,3 +1,60 @@
+@import './variables.scss';
+
 .rightBar {
   flex: 3;
+  position: sticky;
+  top: 70px;
+  height: calc(
+    100vh - 70px
+  ); //header is 70 px: 50 px height, 10 padding bottom and top
+  overflow: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  .container {
+    padding: 20px;
+    .item {
+      span {
+        color: gray;
+      }
+
+      .user {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 20px 0; //spacing between users: top and bottom 20, left and right 0
+        .userInfo {
+          display: flex;
+          align-items: center;
+          gap: 20px; //gap between image and user's name
+          img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+          span {
+            font-weight: 500;
+          }
+        }
+
+        .buttons {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          button {
+            border: none;
+            padding: 5px;
+            color: white;
+            cursor: pointer;
+
+            &:first-child {
+              background-color: $color-primary-light;
+            }
+          }
+        }
+      }
+    }
+  }
 }

@@ -1,5 +1,12 @@
 .leftBar {
   flex: 2;
+  position: sticky;
+  top: 70px; //set position right under header
+  height: calc(100vh - 70px); //header is 70 px: 50 px height, 10 padding bottom and top
+  overflow: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   .container {
     padding: 20px;
 

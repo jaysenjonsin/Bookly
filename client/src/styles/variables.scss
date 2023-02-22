@@ -4,3 +4,51 @@ $color-primary-light: #329d9c;
 $color-secondary-dark: #56c596;
 $color-secondary-light: #7be495;
 $color-accent: #cff4d2;
+
+// light and dark mode
+$themes: (
+  light: (
+    textColor: black,
+    bg: white,
+    // logo:,
+    bgSoft: #f6f3f3,
+    textColorSoft: #555,
+    border: lightgray,
+  ),
+  dark: (
+    textColor: whitesmoke,
+    bg: #222,
+    // logo:,
+    bgSoft: #333,
+    textColorSoft: lightgray,
+    border: #444,
+  ),
+);
+
+//mixin: similar to a function in csss
+//generate $theme-map variable
+// @mixin themify($themes) {
+//   @each $theme, $map in $themes {
+//     // theme main div
+//     .theme-#{$theme} & {
+//       // map through each item in theme main div and change their themes
+//       $theme-map: () !global;
+//       @each $key, $submap in $map {
+//         $value: map-get(map-get($themes, $theme), '#{$key}');
+//         $theme-map: map-merge(
+//           $theme-map,
+//           (
+//             $key: $value,
+//           )
+//         ) !global;
+//       }
+//       @content;
+//       $theme-map: null !global;
+//     }
+//   }
+// }
+
+// //retrieve value from $theme-map and applies appropriate theme styles to the element
+// @function themed($key) {
+//   @return map-get($theme-map, $key);
+// }

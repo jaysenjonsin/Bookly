@@ -46,7 +46,7 @@
             border-radius: 50%;
             background-color: $color-primary-light;
             position: absolute;
-            top: 0; //since this is pos absolute and userInfo is pos relative, this div will go to top 0 of userInfo, aligning on profile picture
+            top: 0; //since this is pos absolute and it's parent, userInfo is pos relative, this div will go to top 0 of userInfo, aligning on profile picture
           }
           p {
             color: gray;

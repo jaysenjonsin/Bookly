@@ -12,11 +12,11 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Image from 'next/image';
 import profilePic from '../../public/undraw_Reading_book_re_kqpk.png';
-import { DarkModeContext } from '../context/darkModeContext';
+import { DarkModeContext } from '../context/DarkModeContext';
 // type Props = {};
 
 const Header = (props: {}) => {
-  const { toggle } = useContext(DarkModeContext);
+  const { darkMode, toggle } = useContext(DarkModeContext);
   return (
     <>
       <div className={styles.header}>
@@ -25,7 +25,11 @@ const Header = (props: {}) => {
             <span>logo here</span>
           </Link>
           <HomeOutlinedIcon />
-          <DarkModeOutlinedIcon onClick={toggle} />
+          {darkMode ? (
+            <WbSunnyOutlinedIcon onClick={toggle} />
+          ) : (
+            <DarkModeOutlinedIcon onClick={toggle} />
+          )}
           <GridViewOutlinedIcon />
           <div className={styles.search}>
             <SearchOutlinedIcon />

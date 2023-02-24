@@ -1,11 +1,14 @@
 import React from 'react';
-import styles from '@/styles/Feed.module.scss';
+import s from '@/styles/Feed.module.scss';
+import Stories from './Stories';
 type Props = {};
 
 const Feed = (props: Props) => {
   return (
     <>
-      <div className={styles.feed}>feed</div>
+      <div className={s.feed}>
+        <Stories />
+      </div>
     </>
   );
 };

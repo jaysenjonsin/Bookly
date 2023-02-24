@@ -6,11 +6,12 @@ import LeftBar from '../components/LeftBar';
 import RightBar from '../components/RightBar';
 import Feed from '../components/Feed';
 import { useContext } from 'react';
-import { DarkModeContext } from '../context/darkModeContext';
+import { DarkModeContext } from '../context/DarkModeContext';
+import { AuthContext } from '../context/AuthContext';
 //default home page
 
 export default function Home() {
-  const currentUser = true;
+  const { user } = useContext(AuthContext);
   const { darkMode } = useContext(DarkModeContext);
   console.log(darkMode);
   return (

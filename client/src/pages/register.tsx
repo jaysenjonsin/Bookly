@@ -18,20 +18,10 @@ const formSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'], //error will display on confirmPassword
-    message: 'Passwords do no match',
+    message: 'Passwords do not match',
   });
 
 export type formSchemaType = z.infer<typeof formSchema>;
-
-const handleRegister: SubmitHandler<formSchemaType> = async (formValues) => {
-  //submitHandler takes a function, which takes in the form data
-  try {
-    return await registerUser(formValues);
-  } catch (err: any) {
-    const message = err.response?.data?.message || err.toString();
-    window.alert(message);
-  }
-};
 
 // type Props = {};
 
@@ -43,6 +33,16 @@ const Register = (props: {}) => {
   } = useForm<formSchemaType>({
     resolver: zodResolver(formSchema),
   });
+
+  const handleRegister: SubmitHandler<formSchemaType> = async (formValues) => {
+    //submitHandler takes a function, which takes in the form data
+    try {
+      return await registerUser(formValues);
+    } catch (err: any) {
+      const message = err.response?.data?.message || err.toString();
+      window.alert(message);
+    }
+  };
 
   return (
     <>

@@ -5,20 +5,21 @@ interface DarkModeContextProps {
   toggle: () => void;
 }
 
-interface DarkModeContextProviderProps {
+interface DarkModeProviderProps {
   children: ReactNode;
 }
 
+//not sure why but cant use localStorage.getItem directly in DarkModeProvider, so setting it here and grabbing it from local storage with a useEffect
+let darkModeFromStorage: string | null;
+
 export const DarkModeContext = createContext<DarkModeContextProps>({
   darkMode: false,
-  toggle: () => {}, //will be replaced by actual toggle when darkModeContextProvider is used
+  toggle: () => {}, //will be replaced by actual toggle when DarkModeProvider is used
 });
 
-export const DarkModeContextProvider = ({
-  children,
-}: DarkModeContextProviderProps) => {
+export const DarkModeProvider = ({ children }: DarkModeProviderProps) => {
   const [darkMode, setDarkMode] = useState<boolean>(
-    localStorage.getItem('darkMode') === 'true' || false
+    darkModeFromStorage ? true : false
   );
 
   const toggle = () => {
@@ -26,7 +27,11 @@ export const DarkModeContextProvider = ({
   };
 
   useEffect(() => {
-    localStorage.setItem('darkMode', darkMode.toString());
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
+    const currentDarkMode = localStorage.getItem('darkMode'); //this will return string or null. cannot do getItem directly in JSON.parse, because JSON.parse can only accept a string as an argument and getItem has the possibility of returning null
+    if (currentDarkMode !== null) {
+      darkModeFromStorage = JSON.parse(currentDarkMode);
+    }
   }, [darkMode]);
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useContext } from 'react';
 import styles from '@/styles/Header.module.scss';
 import Link from 'next/link';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -12,8 +12,11 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Image from 'next/image';
 import profilePic from '../../public/undraw_Reading_book_re_kqpk.png';
+import { DarkModeContext } from '../context/DarkModeContext';
 // type Props = {};
+
 const Header = (props: {}) => {
+  const { darkMode, toggle } = useContext(DarkModeContext);
   return (
     <>
       <div className={styles.header}>
@@ -22,7 +25,11 @@ const Header = (props: {}) => {
             <span>logo here</span>
           </Link>
           <HomeOutlinedIcon />
-          <DarkModeOutlinedIcon />
+          {darkMode ? (
+            <WbSunnyOutlinedIcon onClick={toggle} />
+          ) : (
+            <DarkModeOutlinedIcon onClick={toggle} />
+          )}
           <GridViewOutlinedIcon />
           <div className={styles.search}>
             <SearchOutlinedIcon />

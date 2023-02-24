@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styles from '@/styles/leftBar.module.scss';
 import Image from 'next/image';
 import profilePic from '../../public/undraw_Reading_book_re_kqpk.png';
@@ -9,9 +9,12 @@ import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutline
 import NotificationsOulinedIcon from '@mui/icons-material/NotificationsOutlined';
 import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
 import Diversity1OutlinedIcon from '@mui/icons-material/Diversity1Outlined';
+import { AuthContext } from '../context/AuthContext';
 type Props = {};
 
 const LeftBar = (props: Props) => {
+  const { user } = useContext(AuthContext);
+  console.log('user from left bar ', user);
   return (
     <>
       <div className={styles.leftBar}>

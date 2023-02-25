@@ -3,8 +3,39 @@
   gap: 10px;
   height: 250px;
   margin-bottom: 30px;
-  .story{
-    img{}
-    span{}
+  .story {
+    flex: 1; //making each story the same size by setting each flex item (story) of the flex container(stories) to have a flex grow and flex basis of 1 (default when setting flex:1)
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    // border: 1px solid red;
+    img {
+      width: 100%; //take up width of 100% of its parent(story)
+      height: 100%;
+      object-fit: cover;
+    }
+    span {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      // color: white;
+      font-weight: 500;
+    }
+    button {
+      position: absolute;
+      bottom: 40px;
+      left: 10px;
+      color: white;
+      background-color: blue; //change later
+      border: none;
+      border-radius: 50%;
+      height: 30px;
+      width: 30px;
+      cursor: pointer;
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }

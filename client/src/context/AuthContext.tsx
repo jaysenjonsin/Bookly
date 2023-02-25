@@ -21,7 +21,7 @@ export const AuthContext = createContext<authContextProps>({
 });
 
 export const AuthProvider = ({ children }: authProviderProps) => {
-  const [user, setUser] = useState<userProps | null>(userFromStorage ?? null); //using localStorage.getItem directly in here not working, so using a userFromStorage variable
+  const [user, setUser] = useState<userProps | null>(userFromStorage ?? null); //using localStorage.getItem directly in here not working with NextJS, so using a userFromStorage variable to grab it
 
   useEffect(() => {
     localStorage.setItem('user', JSON.stringify(user));

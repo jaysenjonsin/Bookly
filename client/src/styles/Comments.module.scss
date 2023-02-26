@@ -1,3 +1,60 @@
-.comments{
-  
+@import './variables.scss';
+.comments {
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .write {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 20px 0;
+
+    input {
+      flex: 5;
+      padding: 10px;
+      border: 1 px solid lightgray;
+      background-color: transparent;
+      color: #000;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      background-color: $color-secondary-dark;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  }
+  .comment {
+    display: flex;
+    margin: 30px 0px;
+    justify-content: space-between;
+    gap: 20px;
+
+    .info {
+      display: flex;
+      flex: 5;
+      flex-direction: column;
+      gap: 3px;
+      align-items: flex-start;
+      span {
+        font-weight: 500;
+      }
+      p {
+        color: #555;
+      }
+    }
+
+    .date {
+      flex: 1;
+      align-self: center;
+      color: gray;
+      font-size: 12px;
+    }
+  }
 }

@@ -9,14 +9,14 @@ const Comments = (props: Props) => {
   const comments = [
     {
       id: 1,
-      desc: 'ayo',
+      desc: 'comments description',
       name: 'o',
       userId: 1,
       profilePicture: profilePic,
     },
     {
       id: 2,
-      desc: 'ayo',
+      desc: 'loremasdfja;sdfjas;ldjf;aklsdj;alksjfasd;kfjas;kfjasd;fkj;adsfjads;jf;',
       name: 'o',
       userId: 1,
       profilePicture: profilePic,
@@ -32,12 +32,17 @@ const Comments = (props: Props) => {
   return (
     <>
       <div className={s.comments}>
+        <div className={s.write}>
+          <Image src={profilePic} alt='profile pic' />
+          <input type='text' placeholder='Write a comment' />
+          <button>Send</button>
+        </div>
         {comments.map((comment) => (
           <div className={s.comment}>
             <Image src={profilePic} alt='profile pic' />
             <div className='info'>
               <span>users name</span>
-              <p>comment description</p>
+              <p>{comment.desc}</p>
             </div>
             <span className={s.date}>1 hour ago</span>
           </div>

@@ -9,7 +9,6 @@ interface DarkModeProviderProps {
   children: ReactNode;
 }
 
-//not sure why but cant use localStorage.getItem directly in DarkModeProvider, so setting it here and grabbing it from local storage with a useEffect
 let darkModeFromStorage: string | null;
 
 export const DarkModeContext = createContext<DarkModeContextProps>({
@@ -19,7 +18,7 @@ export const DarkModeContext = createContext<DarkModeContextProps>({
 
 export const DarkModeProvider = ({ children }: DarkModeProviderProps) => {
   const [darkMode, setDarkMode] = useState<boolean>(
-    darkModeFromStorage ? true : false
+    darkModeFromStorage ? true : false //using localStorage.getItem directly in here not working with NextJS, so using a userFromStorage variable to grab it
   );
 
   const toggle = () => {

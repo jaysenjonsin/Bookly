@@ -16,18 +16,20 @@ const RightBar = (props: {}) => {
                 <Image src={profilePic} alt='profile pic' />
                 <span>user's name</span>
               </div>
-              <div className={styles.buttons}></div>
-              <button>follow</button>
-              <button>X</button>
+              <div className={styles.buttons}>
+                <button>follow</button>
+                <button>X</button>
+              </div>
             </div>
             <div className={styles.user}>
               <div className={styles.userInfo}>
                 <Image src={profilePic} alt='profile pic' />
                 <span>user's name</span>
               </div>
-              <div className={styles.buttons}></div>
-              <button>follow</button>
-              <button>X</button>
+              <div className={styles.buttons}>
+                <button>follow</button>
+                <button>X</button>
+              </div>
             </div>
           </div>
           <div className={styles.item}>

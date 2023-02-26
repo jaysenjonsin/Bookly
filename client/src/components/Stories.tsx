@@ -36,7 +36,7 @@ const Stories = (props: Props) => {
           <button>+</button>
         </div>
         {stories.map((story) => (
-          <div className={s.story}>
+          <div className={s.story} key={story.id}>
             <Image src={story.img} alt='profile picture' />
             <span>Story name</span>
           </div>

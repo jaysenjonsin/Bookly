@@ -35,3 +35,4 @@ export const AuthProvider = ({ children }: authProviderProps) => {
     <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
   );
 };
+

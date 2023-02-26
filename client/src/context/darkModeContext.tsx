@@ -9,7 +9,6 @@ interface DarkModeProviderProps {
   children: ReactNode;
 }
 
-
 let darkModeFromStorage: string | null;
 
 export const DarkModeContext = createContext<DarkModeContextProps>({

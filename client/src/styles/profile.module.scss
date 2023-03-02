@@ -1,0 +1,13 @@
+.profile {
+  background-color: #f6f3f3;
+
+  .images {
+    width: 100%;
+    height: 300px;
+    position: relative; //so we can absolutely position profilePic
+    .cover {
+    }
+    .profilePic {
+    }
+  }
+}

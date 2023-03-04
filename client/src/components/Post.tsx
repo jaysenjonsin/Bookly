@@ -1,5 +1,5 @@
 import { StaticImageData } from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
 import s from '@/styles/Post.module.scss';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
@@ -9,6 +9,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Image from 'next/image';
 import Link from 'next/link';
 import profilePic from '../../public/undraw_Reading_book_re_kqpk.png';
+import Comments from './Comments';
 
 type Props = {
   post: {
@@ -22,6 +23,7 @@ type Props = {
 };
 
 const Post = ({ post }: Props) => {
+  const [showComments, setShowComments] = useState(false);
   const liked = false;
   return (
     <>
@@ -55,7 +57,10 @@ const Post = ({ post }: Props) => {
               )}
               12 likes
             </div>
-            <div className={s.item}>
+            <div
+              className={s.item}
+              onClick={() => setShowComments(!showComments)}
+            >
               <TextsmsOutlinedIcon />
               12 comments
             </div>
@@ -64,6 +69,7 @@ const Post = ({ post }: Props) => {
               Share
             </div>
           </div>
+          {showComments && <Comments />}
         </div>
       </div>
     </>

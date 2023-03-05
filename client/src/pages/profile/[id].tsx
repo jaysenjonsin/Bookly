@@ -13,9 +13,6 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Link from 'next/link';
 
 import Image from 'next/image';
-import Header from '../../components/Header';
-import LeftBar from '../../components/LeftBar';
-import RightBar from '../../components/RightBar';
 import Layout from '../../components/Layout';
 
 type Props = {};

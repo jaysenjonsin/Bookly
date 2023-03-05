@@ -2,12 +2,18 @@ import { borderBottom } from '@mui/system';
 import { createContext, ReactNode, useEffect, useState } from 'react';
 
 interface userProps {
+  username: string;
+  email: string;
   name: string;
-  age: number;
+  cover_pic?: string;
+  profile_pic?: string;
+  city?: string;
+  website?: string;
 }
 
 interface authContextProps {
   user: userProps | null;
+  setUser: React.Dispatch<React.SetStateAction<userProps | null>>;
 }
 
 interface authProviderProps {
@@ -18,6 +24,7 @@ let userFromStorage: userProps | null;
 
 export const AuthContext = createContext<authContextProps>({
   user: null,
+  setUser: () => {},
 });
 
 export const AuthProvider = ({ children }: authProviderProps) => {
@@ -32,7 +39,8 @@ export const AuthProvider = ({ children }: authProviderProps) => {
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, setUser }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
-

@@ -14,7 +14,6 @@ type Props = {};
 
 const LeftBar = (props: Props) => {
   const { user } = useContext(AuthContext);
-  console.log('user from left bar ', user);
   return (
     <>
       <div className={styles.leftBar}>

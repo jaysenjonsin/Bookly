@@ -7,6 +7,7 @@ type Props = {};
 
 const Stories = (props: Props) => {
   const { user } = useContext(AuthContext);
+  console.log('user: ', user);
   const stories = [
     {
       id: 1,
@@ -35,7 +36,7 @@ const Stories = (props: Props) => {
       <div className={s.stories}>
         <div className={s.story}>
           <Image src={profilePic} alt='users story here' />
-          <span>{user?.email}</span>
+          <span>{user?.name}</span>
           <button>+</button>
         </div>
         {stories.map((story) => (

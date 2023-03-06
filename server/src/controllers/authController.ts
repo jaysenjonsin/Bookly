@@ -58,7 +58,8 @@ export const register = async (
 
     //store user id session. sets cookie on user
     req.session.userId = user.id;
-    res.status(201).json({ user: userWithoutPassword });
+    //do not do .json({userWithoutPassword}) - this adds extra nested. would have to access in front end using user.userWithoutPassword.proeperty
+    res.status(201).json(userWithoutPassword);
   } catch (err) {
     console.error(err);
     return next(err);
@@ -88,7 +89,7 @@ export const login = async (
     if (user && (await bcrypt.compare(password, user.password))) {
       req.session.userId = user.id;
       const userWithoutPassword = excludeFields(user, ['password']);
-      res.status(200).json({ user: userWithoutPassword });
+      res.status(200).json(userWithoutPassword);
     } else {
       res.status(400);
       //don't tell user whether the given user exists or not

@@ -33,6 +33,7 @@ const login = (props: {}) => {
     try {
       const user = await loginUser(formInput);
       setUser(user);
+      console.log('user: ', user?.name);
       router.push('/');
     } catch (err: any) {
       const message = err.response?.data.message || err.toString();

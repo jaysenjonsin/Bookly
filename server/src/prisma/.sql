@@ -72,3 +72,9 @@ const data = result.rows[0];
 const checkPassword = await bcrypt.compare(req.body.password, data.password);
 }
 --if checkPassword true, return success, else return error
+
+
+--GET ALL POSTS ONLY FROM USER WHO CREATED IT
+--note: we have to say u.id as userId because if we didnt, there would be conflict. there is id on both posts and users, so if we select from both they would both be called id. so we can give u.id an alias.
+--grab everything from posts and id, name and profile picture from users where the users id equals the foreign key (user_id) in posts
+SELECT p.*, u.id as userId, name, profilePicture  FROM posts AS p JOIN users as u ON (u.id = p.user_id)

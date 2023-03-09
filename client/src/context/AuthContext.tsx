@@ -28,7 +28,7 @@ export const AuthContext = createContext<AuthContextProps>({
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
 
-  //set user on page load
+  //set user on page load - without this, user becomes null whenever refreshing page
   useEffect(() => {
     const userFromStorage = localStorage.getItem('user');
     if (userFromStorage) {
@@ -36,11 +36,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, []);
 
-  //update local storage when user changes
+  //update local storage when user changes, AKA when logging in, logging out, registering
   useEffect(() => {
-    if (user !== null) {
+    if (user) {
       localStorage.setItem('user', JSON.stringify(user));
     } else {
+      //if logging out, remove user from local storage
       localStorage.removeItem('user');
     }
   }, [user]);

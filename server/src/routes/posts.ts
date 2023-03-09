@@ -1,12 +1,7 @@
 import express from 'express';
+import { getPosts } from '../controllers/postController';
 const router = express.Router();
 
-// router.get('/test', (_, res) => {
-//   res.send('test');
-// });
-
-router.route('/').get((_, res) => {
-  res.send('hello from posts');
-});
+router.route('/').get(getPosts);
 
 export default router;

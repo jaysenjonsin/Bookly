@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { registerUser } from '../services/authService';
 import s from '@/styles/register.module.scss';
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 const formSchema = z
   .object({
@@ -27,6 +29,7 @@ export type formSchemaType = z.infer<typeof formSchema>;
 // type Props = {};
 
 const Register = (props: {}) => {
+  const { setUser } = useContext(AuthContext);
   const router = useRouter();
 
   const {
@@ -40,7 +43,8 @@ const Register = (props: {}) => {
   const handleRegister: SubmitHandler<formSchemaType> = async (formValues) => {
     //submitHandler takes a function, which takes in the form data
     try {
-      await registerUser(formValues);
+      const user = await registerUser(formValues);
+      setUser(user);
       router.push('/');
     } catch (err: any) {
       const message = err.response?.data?.message || err.toString();

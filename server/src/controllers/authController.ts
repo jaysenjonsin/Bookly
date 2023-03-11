@@ -6,7 +6,7 @@ import { excludeFields } from '../utils/excludeFields';
 import '../utils/types';
 import { validateRegister } from '../utils/validateRegister';
 
-export const authenticate = (
+export const authenticatePage = (
   req: Request,
   res: Response
   // next: NextFunction
@@ -17,6 +17,21 @@ export const authenticate = (
   }
   //else return next();
   else res.status(200).json({ message: 'Authorized' });
+};
+
+export const authenticateRoute = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.session.userId) {
+      res.status(400);
+      throw new Error('Not authorized');
+    } else return next();
+  } catch (err) {
+    return next(err);
+  }
 };
 
 export const register = async (

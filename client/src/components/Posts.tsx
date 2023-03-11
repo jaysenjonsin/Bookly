@@ -8,7 +8,7 @@ import { fetchPosts } from '../services/postService';
 type Props = {};
 
 const Posts = (props: Props) => {
-  const { isLoading, isError, data } = useQuery(['posts'], fetchPosts);
+  const { isLoading, isError, error, data } = useQuery(['posts'], fetchPosts);
 
   const posts = [
     {
@@ -52,9 +52,11 @@ const Posts = (props: Props) => {
         ))}
 
         {/* fetching data using data property from react query: */}
-        {/* {data.map((post: any) => (
-          <Post post={post} key={post.id} />
-        ))} */}
+        {error /* not sure whether to use error or isError test later */
+          ? 'error'   //not sure how to get error message from backend here: mayber error.message since we throw message in backend or maybe just error? test later
+          : isLoading
+          ? 'loading'
+          : data.map((post: any) => <Post post={post} key={post.id} />)}
       </div>
     </>
   );

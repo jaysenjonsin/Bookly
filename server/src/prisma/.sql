@@ -8,6 +8,22 @@ CREATE TABLE "social"."users" ("id" serial NOT NULL,"username" varchar(45) NOT N
 
 --type "serial" in postgres applies autoincrement
 
+--note: If names do not contain any special characters, you dont have to put quotes around them. prisma just did it by default. So, creating a table could actually just look like this: 
+CREATE TABLE social.users (
+    id serial NOT NULL,
+    username varchar(45) NOT NULL UNIQUE,
+    email varchar(45) NOT NULL UNIQUE,
+    password varchar(500) NOT NULL,
+    name varchar(50) NOT NULL,
+    cover_pic varchar(200),
+    profile_pic varchar(200),
+    city varchar(50),
+    website varchar(50),
+    createdAt TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP(3) NOT NULL,
+    PRIMARY KEY (id)
+);
+
 -- create posts table
 CREATE TABLE "social"."posts" ("id" serial NOT NULL, "desc" varchar(200), "img" varchar(200), "user_id" INT, PRIMARY KEY ("id"), CONSTRAINT "user_id" FOREIGN KEY ("user_id") REFERENCES "social"."users" ("id") ON DELETE CASCADE ON UPDATE CASCADE);
 
@@ -77,4 +93,61 @@ const checkPassword = await bcrypt.compare(req.body.password, data.password);
 --GET ALL POSTS ONLY FROM USER WHO CREATED IT
 --note: we have to say u.id as userId because if we didnt, there would be conflict. there is id on both posts and users, so if we select from both they would both be called id. so we can give u.id an alias.
 --grab everything from posts and id, name and profile picture from users where the users id equals the foreign key (user_id) in posts
-SELECT p.*, u.id as userId, name, profilePicture  FROM posts AS p JOIN users as u ON (u.id = p.user_id)
+SELECT p.*, u.id as userId, name, profile_pic FROM posts AS p JOIN users as u ON (u.id = p.user_id)
+
+--SIMPLE JOIN TABLE FORMAT: select <anything from first table>, <anything from second table> FROM <first table> AS <alias> JOIN <second table> as <alias> ON (<table id = other table's foreign key referencing table id>)
+
+
+--GET POSTS FROM ONLY WHO YOU FOLLOW
+SELECT p.*, u.id as userId, name, profile_pic FROM posts as p JOIN users as u ON (u.id = p.user_id) JOIN relationships as r ON (p.user_id = r.followed_user_id AND r.follower_user_id = <current user id>)
+
+--NOTE: we would get <current user id> from the cookies, or from howevever else we determine who is currently logged in. ex. <current user id> = req.cookies.ski
+
+--if we wanted to get posts from both who you follow AND yourself, you would use a left join: 
+SELECT p.*, u.id as userId, name, profile_pic 
+FROM posts as p 
+JOIN users as u ON (u.id = p.user_id) 
+LEFT JOIN relationships as r ON (p.user_id = r.followed_user_id AND r.follower_user_id = <current user id>)
+WHERE p.user_id = <current user id> OR r.follower_user_id = <current user id>
+
+--can order latest to earliest by using descending order:
+
+... ORDER BY p.createdAt DESC
+
+--This is what a function would look like using pg library:
+-- export const getPosts = (req, res) => {
+--     const q =
+--       userId !== "undefined"
+--         ? `SELECT p.*, u.id AS userId, name, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) WHERE p.userId = ? ORDER BY p.createdAt DESC`
+--         : `SELECT p.*, u.id AS userId, name, profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId)
+--     LEFT JOIN relationships AS r ON (p.userId = r.followedUserId) WHERE r.followerUserId= ? OR p.userId =?
+--     ORDER BY p.createdAt DESC`;
+
+--     const values =
+--       userId !== "undefined" ? [userId] : [userInfo.id, userInfo.id];
+
+--     db.query(q, values, (err, data) => {
+--       if (err) return res.status(500).json(err);
+--       return res.status(200).json(data);
+--     });
+--   });
+-- };
+
+
+--ADD POST
+export const addPost = (req, res) => {
+    const q =
+      "INSERT INTO posts(`desc`, `img`, `createdAt`, `userId`) VALUES (?)";
+    const values = [
+      req.body.desc,
+      req.body.img,
+      moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+      userInfo.id,
+    ];
+
+    db.query(q, [values], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).json("Post has been created.");
+    });
+  });
+};

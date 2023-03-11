@@ -1,7 +1,11 @@
 import express from 'express';
-import { getPosts } from '../controllers/postController';
+import { authenticateRoute } from '../controllers/authController';
+import { addPost, getPosts } from '../controllers/postController';
 const router = express.Router();
 
-router.route('/').get(getPosts);
+router
+  .route('/')
+  .get(authenticateRoute, getPosts)
+  .post(authenticateRoute, addPost);
 
 export default router;

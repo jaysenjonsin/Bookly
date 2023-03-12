@@ -141,8 +141,8 @@ export const addPost = (req, res) => {
     const values = [
       req.body.desc,
       req.body.img,
-      moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
-      userInfo.id,
+      moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"), --we dont actually have to add or get createdAt because we set default value in our schema
+      userInfo.id, <-- could be a req.params, or in our case req.session.userId
     ];
 
     db.query(q, [values], (err, data) => {

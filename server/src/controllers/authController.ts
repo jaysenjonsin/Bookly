@@ -27,7 +27,7 @@ export const authenticateRoute = (
   try {
     if (!req.session.userId) {
       res.status(400);
-      throw new Error('Not authorized');
+      throw new Error('You must log in to continue');
     } else return next();
   } catch (err) {
     return next(err);

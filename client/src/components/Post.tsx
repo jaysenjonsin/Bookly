@@ -10,19 +10,24 @@ import Image from 'next/image';
 import Link from 'next/link';
 import profilePic from '../../public/undraw_Reading_book_re_kqpk.png';
 import Comments from './Comments';
+import { PostType } from './Posts';
 
-type Props = {
-  post: {
-    id: number;
-    name: string;
-    userId: number;
-    profilePic: StaticImageData;
-    desc: string;
-    img: StaticImageData;
-  }; //copy pasted type from hovering over post in the map method of Posts.tsx
+// type Props = {
+//   post: {
+//     id: number;
+//     name: string;
+//     userId: number;
+//     profilePic: StaticImageData; //or maybe type string? string in backend
+//     desc: string;
+//     img: StaticImageData;
+//   }; //copy pasted type from hovering over post in the map method of Posts.tsx
+// };
+
+type props = {
+  post: PostType;
 };
 
-const Post = ({ post }: Props) => {
+const Post = ({ post }: props) => {
   const [showComments, setShowComments] = useState(false);
   const liked = false;
   return (
@@ -37,7 +42,7 @@ const Post = ({ post }: Props) => {
                   href='/'
                   style={{ textDecoration: 'none', color: 'inherit' }}
                 >
-                  <span className={s.name}>post.name</span>
+                  <span className={s.name}>{post?.user.name}</span>
                 </Link>
                 <span className={s.date}>1 minute ago</span>
               </div>
@@ -45,7 +50,7 @@ const Post = ({ post }: Props) => {
             <MoreHorizIcon />
           </div>
           <div className={s.content}>
-            <p>post.description</p>
+            <p>{post.desc}</p>
             <Image src={profilePic} alt='post image' />
           </div>
           <div className={s.info}>

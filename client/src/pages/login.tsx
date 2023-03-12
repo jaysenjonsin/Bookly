@@ -1,7 +1,7 @@
 import styles from '@/styles/login.module.scss';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { AuthContext } from '../context/AuthContext';
@@ -18,8 +18,14 @@ export type formSchemaType = z.infer<typeof formSchema>; //cannot export from in
 
 // type Props = {};
 const login = (props: {}) => {
-  const { setUser } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+    }
+  }, [user]);
 
   const {
     register,
@@ -33,7 +39,6 @@ const login = (props: {}) => {
     try {
       const user = await loginUser(formInput);
       setUser(user);
-      router.push('/');
     } catch (err: any) {
       const message = err.response?.data.message || err.toString();
       window.alert(message);

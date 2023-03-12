@@ -1,11 +1,14 @@
+import { useContext, useEffect } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod'; //from @hookform/resolvers
 import { SubmitHandler, useForm } from 'react-hook-form'; //import SubmitHandler for the type to put on our onSubmit function
 import { z } from 'zod';
+
 import { registerUser } from '../services/authService';
-import s from '@/styles/register.module.scss';
-import { useRouter } from 'next/router';
-import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import s from '@/styles/register.module.scss';
+
+import { useRouter } from 'next/router';
 
 const formSchema = z
   .object({
@@ -29,8 +32,12 @@ export type formSchemaType = z.infer<typeof formSchema>;
 // type Props = {};
 
 const Register = (props: {}) => {
-  const { setUser } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const router = useRouter();
+
+  useEffect(() => {
+    if (user) router.push('/');
+  }, [user]);
 
   const {
     register,
@@ -45,7 +52,6 @@ const Register = (props: {}) => {
     try {
       const user = await registerUser(formValues);
       setUser(user);
-      router.push('/');
     } catch (err: any) {
       const message = err.response?.data?.message || err.toString();
       window.alert(message);

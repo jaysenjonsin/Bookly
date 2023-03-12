@@ -1,13 +1,13 @@
 import { createContext, useEffect, useState, ReactNode } from 'react';
 
-interface DarkModeContextProps {
+type DarkModeContextProps = {
   darkMode: boolean;
   toggle: () => void;
-}
+};
 
-interface DarkModeProviderProps {
+type DarkModeProviderProps = {
   children: ReactNode;
-}
+};
 
 let darkModeFromStorage: string | null;
 

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import moment from 'moment';
 import { prisma } from '..';
 
 export const getPosts = async (
@@ -43,7 +44,6 @@ export const getPosts = async (
         created_at: 'desc',
       },
     });
-
     res.status(200).json(posts);
   } catch (err) {
     return next(err);
@@ -51,9 +51,31 @@ export const getPosts = async (
 };
 
 export const addPost = async (
-  _req: Request,
-  _res: Response,
-  _next: NextFunction
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
-  console.log('');
+  const { desc, img } = req.body;
+  try {
+    if (!desc) {
+      res.status(400);
+      throw new Error('Text required');
+    }
+    const newPost = await prisma.post.create({
+      data: {
+        desc,
+        img, //auto set to null if no img input
+        user: {
+          connect: {
+            id: req.session.userId,
+          },
+        },
+      },
+    });
+    res.status(201).json(newPost);
+  } catch (err) {
+    return next(err);
+  }
+  const time = moment(Date.now()).format('YYY-MM-DD HH:mm:ss'); // maybe format date in the front end
+  console.log(time);
 };

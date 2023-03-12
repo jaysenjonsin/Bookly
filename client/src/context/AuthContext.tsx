@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 
-interface User {
+type User = {
   username: string;
   email: string;
   name: string;
@@ -8,16 +8,16 @@ interface User {
   profile_pic?: string;
   city?: string;
   website?: string;
-}
+};
 
-interface AuthContextProps {
+type AuthContextProps = {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
-}
+};
 
-interface AuthProviderProps {
+type AuthProviderProps = {
   children: ReactNode;
-}
+};
 
 export const AuthContext = createContext<AuthContextProps>({
   //initial values

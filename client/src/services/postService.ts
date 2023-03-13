@@ -5,3 +5,7 @@ export const fetchPosts = async () => {
   const { data } = await axios.get(URL, { withCredentials: true });
   return data;
 };
+
+export const createPost = async (userInput: any) => {
+  await axios.post(URL, userInput, { withCredentials: true });
+};

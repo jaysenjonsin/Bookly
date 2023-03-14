@@ -10,6 +10,7 @@ import commentRouter from './routes/comments';
 import likeRouter from './routes/likes';
 import postRouter from './routes/posts';
 import userRouter from './routes/users';
+import multer from 'multer';
 
 import { COOKIE_NAME, __prod__ } from './utils/constants';
 
@@ -52,6 +53,22 @@ const main = async () => {
       },
     })
   );
+
+  const storage = multer.diskStorage({
+    destination: (_req, _file, cb) => {
+      cb(null, '../client/public/upload');
+    },
+    filename: (_req, file, cb) => {
+      //creating unique file name
+      cb(null, Date.now() + file.originalname);
+    },
+  });
+
+  const upload = multer({ storage });
+
+  app.post('api/upload', upload.single('file'), (req, res) => {
+    res.status(200).json(req.file?.filename);
+  });
 
   app.use('/api/auth', authRouter);
   app.use('/api/users', userRouter);

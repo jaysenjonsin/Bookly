@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import moment from 'moment';
 import { prisma } from '..';
 
 export const getPosts = async (
@@ -76,6 +75,6 @@ export const addPost = async (
   } catch (err) {
     return next(err);
   }
-  const time = moment(Date.now()).format('YYY-MM-DD HH:mm:ss'); // maybe format date in the front end
-  console.log(time);
+  // const time = moment(Date.now()).format('YYY-MM-DD HH:mm:ss'); // maybe format date in the front end
+  // console.log(time);
 };

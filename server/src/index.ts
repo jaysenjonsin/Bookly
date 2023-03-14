@@ -55,17 +55,17 @@ const main = async () => {
   );
 
   const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (_req, _file, cb) => {
       cb(null, '../client/public/upload');
     },
-    filename: (req, file, cb) => {
+    filename: (_req, file, cb) => {
       //creating unique file name
       cb(null, Date.now() + file.originalname);
     },
   });
 
   const upload = multer({ storage });
-  
+
   app.post('api/upload', upload.single('file'), (req, res) => {
     res.status(200).json(req.file?.filename);
   });

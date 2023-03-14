@@ -16,8 +16,7 @@ const formSchema = z.object({
 
 export type formSchemaType = z.infer<typeof formSchema>; //cannot export from inside the component
 
-// type Props = {};
-const login = (props: {}) => {
+const login = () => {
   const { user, setUser } = useContext(AuthContext);
   const router = useRouter();
 

@@ -7,5 +7,7 @@ export const fetchPosts = async () => {
 };
 
 export const createPost = async (userInput: any) => {
-  await axios.post(URL, userInput, { withCredentials: true });
+  const { data } = await axios.post(URL, userInput, { withCredentials: true });
+
+  return data;
 };

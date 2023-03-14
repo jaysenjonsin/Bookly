@@ -1,56 +1,117 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import s from '@/styles/Share.module.scss';
 import { AuthContext } from '../context/AuthContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPost } from '../services/postService';
+import { z } from 'zod';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 type Props = {};
+
+const postFormSchema = z.object({
+  desc: z.string().min(1, 'Text required'),
+  file: z.any(),
+});
+
+export type postFormSchemaType = z.infer<typeof postFormSchema>;
 
 const Share = (props: Props) => {
   const { user } = useContext(AuthContext);
   const { invalidateQueries } = useQueryClient();
-  //Unlike useQuery where u can pass the function in directly, euse mutation takes a function that returns a promise, so cant just directly past createPost here. pass in a function that calls createPost
-  const { data, isLoading } = useMutation(() => createPost('hi'), {
+  const [desc, setDesc] = useState('hi');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<postFormSchemaType>({
+    resolver: zodResolver(postFormSchema),
+  });
+
+  const upload = async () => {
+    try {
+    } catch (err) {
+      window.alert(err);
+    }
+  };
+  //useMutation takes in a func that returns a func that returns promise, cant just pass in the func
+  const { data, isLoading, mutate } = useMutation((desc) => createPost(desc), {
     onSuccess: () => {
       invalidateQueries(['posts']);
     },
   });
+
+  const onSubmit: SubmitHandler<postFormSchemaType> = async (data) => {
+    const formData = new FormData(); //create empty formData object. append to this object using formData.append(key, val)
+    formData.append('desc', desc);
+    formData.append('file', data.file[0]);
+    //axios call with form data. will have to change backend, sending form data like this does not come in req.body. also might have to consider url.encoded to true
+  };
   return (
     <>
       <div className={s.share}>
-        <div className={s.container}>
-          <div className={s.top}>
-            <img src={user?.profile_pic} alt='' />
-            <input type='text' placeholder='What have you been reading?' />
-          </div>
-          <hr />
-          <div className={s.bottom}>
-            <div className={s.left}>
-              <input type='file' id='file' /*style = {{display:'none}} */ />
-              {/*give id for the label */}
-              <label htmlFor='file'>
-                {/*in normal HTML, its just 'for' instead of 'htmlFor' */}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className={s.container}>
+            <div className={s.top}>
+              <img src={user?.profile_pic} alt='' />
+              <input
+                type='text'
+                placeholder='What have you been reading?'
+                {...register('desc')}
+              />
+            </div>
+            <hr />
+            <div className={s.bottom}>
+              <div className={s.left}>
+                <input
+                  type='file'
+                  id='file'
+                  {...register('file')} /*style = {{display:'none}} */
+                />
+                {/*give id for the label */}
+                <label htmlFor='file'>
+                  {/*in normal HTML, its just 'for' instead of 'htmlFor' */}
+                  <div className={s.item}>
+                    <img src='' alt='' />
+                    <span>Add Image</span>
+                  </div>
+                </label>
                 <div className={s.item}>
                   <img src='' alt='' />
-                  <span>Add Image</span>
+                  <span>Add Place</span>
                 </div>
-              </label>
-              <div className={s.item}>
-                <img src='' alt='' />
-                <span>Add Place</span>
+                <div className={s.item}>
+                  <img src='' alt='' />
+                  <span>Tag Friends</span>
+                </div>
               </div>
-              <div className={s.item}>
-                <img src='' alt='' />
-                <span>Tag Friends</span>
+              <div className={s.right}>
+                <button type='submit'>Share</button>
               </div>
-            </div>
-            <div className={s.right}>
-              <button>Share</button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </>
   );
 };
 
 export default Share;
+
+//in react hook form, we easily bind input element and form state with {...register} func. If using normal form, this is how we would handle file upload onChange func:
+// <input type = 'file' accept = "image/*" onChange = {(e)=> setFile(e.target.files[0])}
+
+//submit func:
+
+// const submit = async event => {
+//   event.preventDefault()
+
+//   const formData = new FormData();
+//   formData.append("image", file)
+//   formData.append("caption", caption)
+//   await axios.post("/api/posts", formData, { headers: {'Content-Type': 'multipart/form-data'}})
+// }
+
+// there would be an error if you give the file input a value of {file}. The value attribute in an input element is used for setting the default value of the input. It is typically used with input types like text, password, number, etc., where the user enters the value.
+
+// For file inputs, the value attribute is read-only and can't be set due to security reasons. Instead, just use the onChange event to update the state of the file variable.

@@ -21,10 +21,10 @@ export const prisma = new PrismaClient({
   log: ['query'], //log executed SQL in terminal
 });
 
-const main = async () => {
-  const RedisStore = connectRedis(session); //configure redis so that it can use express session
-  const redis = new Redis(); //create ioredis client
+const RedisStore = connectRedis(session); //configure redis so that it can use express session
+export const redis = new Redis(); //create ioredis client
 
+const main = async () => {
   const app = express();
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));

@@ -7,5 +7,6 @@ router
   .route('/')
   .get(authenticateRoute, getPosts)
   .post(authenticateRoute, addPost);
+//when editing post, make sure to change it in redis store as well
 
 export default router;

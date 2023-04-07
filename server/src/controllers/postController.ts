@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { prisma } from '..';
+import { redis } from '..';
 
 export const getPosts = async (
   req: Request,
@@ -7,6 +8,10 @@ export const getPosts = async (
   next: NextFunction
 ) => {
   try {
+    //response time went from 379ms - 6ms
+    const cachedPost = await redis.get(`feed-${req.session.userId}`);
+    if (cachedPost) return res.status(200).json(JSON.parse(cachedPost));
+
     const posts = await prisma.post.findMany({
       select: {
         id: true,
@@ -43,6 +48,9 @@ export const getPosts = async (
         created_at: 'desc',
       },
     });
+
+    //redis.set(key(must be a string), value, EX (for expiration), expiration time in seconds)
+    redis.set(`feed-${req.session.userId}`, JSON.stringify(posts), 'EX', 3600);
     res.status(200).json(posts);
   } catch (err) {
     return next(err);

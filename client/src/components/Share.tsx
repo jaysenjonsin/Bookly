@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { ChangeEvent, useContext, useState } from 'react';
 import s from '@/styles/Share.module.scss';
 import { AuthContext } from '../context/AuthContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -6,7 +6,6 @@ import { createPost } from '../services/postService';
 import { z } from 'zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-type Props = {};
 
 const postFormSchema = z.object({
   desc: z.string().min(1, 'Text required'),
@@ -15,10 +14,11 @@ const postFormSchema = z.object({
 
 export type postFormSchemaType = z.infer<typeof postFormSchema>;
 
-const Share = (props: Props) => {
+const Share = () => {
   const { user } = useContext(AuthContext);
   const { invalidateQueries } = useQueryClient();
   const [desc, setDesc] = useState('hi');
+  const [file, setFile] = useState<any>('hi');
 
   const {
     register,
@@ -35,17 +35,30 @@ const Share = (props: Props) => {
     }
   };
   //useMutation takes in a func that returns a func that returns promise, cant just pass in the func
-  const { data, isLoading, mutate } = useMutation((desc) => createPost(desc), {
-    onSuccess: () => {
-      invalidateQueries(['posts']);
-    },
-  });
+  const { data, isLoading, mutate } = useMutation(
+    (userInput) => createPost(userInput),
+    {
+      onSuccess: () => {
+        invalidateQueries(['posts']);
+      },
+    }
+  );
 
   const onSubmit: SubmitHandler<postFormSchemaType> = async (data) => {
-    const formData = new FormData(); //create empty formData object. append to this object using formData.append(key, val)
-    formData.append('desc', desc);
-    formData.append('file', data.file[0]);
-    //axios call with form data. will have to change backend, sending form data like this does not come in req.body. also might have to consider url.encoded to true
+    try {
+      const formData = new FormData(); //create empty formData object. append to this object using formData.append(key, val). need to use this to send files in react
+      formData.append('desc', desc);
+      formData.append('file', data.file[0]);
+      //axios call with form data. will have to change backend, sending form data like this does not come in req.body. also might have to consider url.encoded to true
+      // mutate({ desc, file });
+    } catch (err: any) {
+      window.alert(err.response?.data.message);
+    }
+  };
+
+  const fileSelected = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files![0];
+    setFile(file);
   };
   return (
     <>
@@ -71,6 +84,7 @@ const Share = (props: Props) => {
                 <input
                   type='file'
                   id='file'
+                  accept='image/*'
                   {...register('file')}
                   style={{ display: 'none' }}
                 />

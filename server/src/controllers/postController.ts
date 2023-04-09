@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { prisma } from '..';
+import { prisma, upload } from '..';
 import { redis } from '..';
 
 export const getPosts = async (
@@ -8,6 +8,7 @@ export const getPosts = async (
   next: NextFunction
 ) => {
   try {
+    upload.single('file');
     //response time went from 379ms - 6ms
     const cachedPost = await redis.get(`feed-${req.session.userId}`);
     if (cachedPost) return res.status(200).json(JSON.parse(cachedPost));
@@ -62,6 +63,7 @@ export const addPost = async (
   res: Response,
   next: NextFunction
 ) => {
+  // express server doesnt know how to deal with multipart form data by default, so will use multer middleware
   const { desc, img } = req.body;
   try {
     if (!desc) {

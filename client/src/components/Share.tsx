@@ -53,12 +53,17 @@ const Share = (props: Props) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={s.container}>
             <div className={s.top}>
-              <img src={user?.profile_pic} alt='' />
-              <input
-                type='text'
-                placeholder='What have you been reading?'
-                {...register('desc')}
-              />
+              <div className={s.left}>
+                <img src={user?.profile_pic} alt='profile pic' />
+                <input
+                  type='text'
+                  placeholder='What have you been reading?'
+                  {...register('desc')}
+                />
+              </div>
+              <div className={s.right}>
+                {/* conditional render of file img user input */}
+              </div>
             </div>
             <hr />
             <div className={s.bottom}>
@@ -66,7 +71,8 @@ const Share = (props: Props) => {
                 <input
                   type='file'
                   id='file'
-                  {...register('file')} /*style = {{display:'none}} */
+                  {...register('file')}
+                  style={{ display: 'none' }}
                 />
                 {/*give id for the label */}
                 <label htmlFor='file'>

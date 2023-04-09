@@ -36,18 +36,14 @@ const Posts = (props: Props) => {
     ['posts'],
     fetchPosts
   );
-  //NOTE :error / isError only triggered if the promise is rejected, use data.message instead
-  return (
-    <>
-      {/* fetching data using data property from react query: */}
-      {data?.message /* if we throw message in backend, it is an error, so display the error message */
-        ? data?.message
-        : isLoading
-        ? 'loading' //change to spinner
-        : data.map((post: PostType) => <Post post={post} key={post.id} />)}
-      {/* </div> */}
-    </>
-  );
+
+  let content;
+  if (isLoading) content = 'loading...'; //change to spinner
+  else if (data?.message) content = data?.message;
+  /*  throwing message in backend if error, so display the error message if error */ else
+    content = data.map((post: PostType) => <Post post={post} key={post.id} />);
+
+  return <div className={s.posts}>{content}</div>;
 };
 
 export default Posts;

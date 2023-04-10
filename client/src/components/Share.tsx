@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { ChangeEvent, useContext, useState } from 'react';
 import s from '@/styles/Share.module.scss';
 import { AuthContext } from '../context/AuthContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -6,7 +6,6 @@ import { createPost } from '../services/postService';
 import { z } from 'zod';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-type Props = {};
 
 const postFormSchema = z.object({
   desc: z.string().min(1, 'Text required'),
@@ -15,10 +14,11 @@ const postFormSchema = z.object({
 
 export type postFormSchemaType = z.infer<typeof postFormSchema>;
 
-const Share = (props: Props) => {
+const Share = () => {
   const { user } = useContext(AuthContext);
   const { invalidateQueries } = useQueryClient();
   const [desc, setDesc] = useState('hi');
+  const [file, setFile] = useState<any>('hi');
 
   const {
     register,
@@ -28,24 +28,37 @@ const Share = (props: Props) => {
     resolver: zodResolver(postFormSchema),
   });
 
-  const upload = async () => {
-    try {
-    } catch (err) {
-      window.alert(err);
-    }
-  };
+  // const upload = async () => {
+  //   try {
+  //   } catch (err) {
+  //     window.alert(err);
+  //   }
+  // };
   //useMutation takes in a func that returns a func that returns promise, cant just pass in the func
-  const { data, isLoading, mutate } = useMutation((desc) => createPost(desc), {
+  const { data, isLoading, mutate } = useMutation(createPost, {
     onSuccess: () => {
       invalidateQueries(['posts']);
     },
   });
 
-  const onSubmit: SubmitHandler<postFormSchemaType> = async (data) => {
-    const formData = new FormData(); //create empty formData object. append to this object using formData.append(key, val)
-    formData.append('desc', desc);
-    formData.append('file', data.file[0]);
-    //axios call with form data. will have to change backend, sending form data like this does not come in req.body. also might have to consider url.encoded to true
+  const onSubmit: SubmitHandler<postFormSchemaType> = async (formInput) => {
+    //onSubmit function in RHF takes in the data
+    try {
+      const formData = new FormData(); //create empty formData object. append to this object using formData.append(key, val). need to use this to send files in react because JSON format cannot handle file uploads
+      formData.append('desc', formInput.desc);
+      console.log('form input: ', formInput.desc);
+      console.log('file shi ', formInput.file[0]);
+      formData.append('file', formInput.file[0]);
+      //axios call with form data. will have to change backend, sending form data like this does not come in req.body. also might have to consider url.encoded to true
+      mutate(formData);
+    } catch (err: any) {
+      window.alert(err.response?.data.message);
+    }
+  };
+
+  const selectFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files![0];
+    setFile(file);
   };
   return (
     <>
@@ -53,12 +66,17 @@ const Share = (props: Props) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={s.container}>
             <div className={s.top}>
-              <img src={user?.profile_pic} alt='' />
-              <input
-                type='text'
-                placeholder='What have you been reading?'
-                {...register('desc')}
-              />
+              <div className={s.left}>
+                <img src={user?.profile_pic} alt='profile pic' />
+                <input
+                  type='text'
+                  placeholder='What have you been reading?'
+                  {...register('desc')}
+                />
+              </div>
+              <div className={s.right}>
+                {/* conditional render of file img user input */}
+              </div>
             </div>
             <hr />
             <div className={s.bottom}>
@@ -66,7 +84,10 @@ const Share = (props: Props) => {
                 <input
                   type='file'
                   id='file'
-                  {...register('file')} /*style = {{display:'none}} */
+                  accept='image/*'
+                  {...register('file')}
+                  //onChange={selectFile} //need to add in addition to registering
+                  style={{ display: 'none' }}
                 />
                 {/*give id for the label */}
                 <label htmlFor='file'>

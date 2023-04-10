@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { prisma } from '..';
+import { prisma, upload } from '..';
 import { redis } from '..';
 
 export const getPosts = async (
@@ -62,6 +62,8 @@ export const addPost = async (
   res: Response,
   next: NextFunction
 ) => {
+  upload.single('file');
+  // express server doesnt know how to deal with multipart form data by default, so will use multer middleware
   const { desc, img } = req.body;
   try {
     if (!desc) {
@@ -71,7 +73,7 @@ export const addPost = async (
     const newPost = await prisma.post.create({
       data: {
         desc,
-        img, //auto set to null if no img input
+        img, //this will auto set to null if no img input
         user: {
           connect: {
             id: req.session.userId,
@@ -79,6 +81,20 @@ export const addPost = async (
         },
       },
     });
+    // after adding the post, need to make sure to update the redis cache as well since getPosts will be grabbing from there
+    const cachedPostsString = await redis.get(`feed-${req.session.userId}`);
+    if (cachedPostsString) {
+      const cachedPosts = JSON.parse(cachedPostsString);
+      cachedPosts.unshift(newPost);
+
+      await redis.set(
+        `feed-${req.session.userId}`,
+        JSON.stringify(cachedPosts),
+        'EX',
+        3600
+      );
+    }
+
     res.status(201).json(newPost);
   } catch (err) {
     return next(err);

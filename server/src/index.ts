@@ -24,69 +24,56 @@ export const prisma = new PrismaClient({
 const RedisStore = connectRedis(session); //configure redis so that it can use express session
 export const redis = new Redis(); //create ioredis client
 
-const main = async () => {
-  const app = express();
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
-  app.use(
-    cors({
-      origin: 'http://localhost:3000',
-      credentials: true, // sets Access-Control-Allow-Credentials header to true, allowing credentials (cookies, etc) to be sent to server
-    })
-  );
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true, // sets Access-Control-Allow-Credentials header to true, allowing credentials (cookies, etc) to be sent to server
+  })
+);
 
-  app.use(
-    session({
-      name: COOKIE_NAME,
-      store: new RedisStore({
-        client: redis,
-        disableTouch: true, //prevents update of session expiration time
-      }),
-      saveUninitialized: false, //false: we only save session when there is data to store in it.
-      resave: false, // false: only resave session if it is modified.
-      secret: process.env.SESSION_SECRET ?? 'secret',
-      cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 365,
-        httpOnly: true,
-        sameSite: 'lax', //CSRF
-        secure: __prod__,
-      },
-    })
-  );
-
-  const storage = multer.diskStorage({
-    destination: (_req, _file, cb) => {
-      cb(null, '../client/public/upload');
+app.use(
+  session({
+    name: COOKIE_NAME,
+    store: new RedisStore({
+      client: redis,
+      disableTouch: true, //prevents update of session expiration time
+    }),
+    saveUninitialized: false, //false: we only save session when there is data to store in it.
+    resave: false, // false: only resave session if it is modified.
+    secret: process.env.SESSION_SECRET ?? 'secret',
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 365,
+      httpOnly: true,
+      sameSite: 'lax', //CSRF
+      secure: __prod__,
     },
-    filename: (_req, file, cb) => {
-      //creating unique file name
-      cb(null, Date.now() + file.originalname);
-    },
-  });
+  })
+);
 
-  const upload = multer({ storage });
+const storage = multer.memoryStorage(); //create memory storage
+export const upload = multer({ storage: storage }); //create upload func that stores image to memory. use inside createPost
 
-  app.post('api/upload', upload.single('file'), (req, res) => {
-    res.status(200).json(req.file?.filename);
-  });
+app.post('api/upload', upload.single('file'), (req, res) => {
+  res.status(200).json(req.file?.filename);
+});
 
-  app.use('/api/auth', authRouter);
-  app.use('/api/users', userRouter);
-  app.use('/api/posts', postRouter);
-  app.use('/api/comments', commentRouter);
-  app.use('/api/likes', likeRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
+app.use('/api/posts', postRouter);
+app.use('/api/comments', commentRouter);
+app.use('/api/likes', likeRouter);
 
-  app.use((_, res) => res.status(404).send('page not found'));
+app.use((_, res) => res.status(404).send('page not found'));
 
-  app.use((err: any, _: Request, res: Response, __: NextFunction) => {
-    const statusCode = res.statusCode ? res.statusCode : 500;
-    const message = err.message ? err.message : 'unknown error occured';
-    res.status(statusCode).json({ message });
-  });
+app.use((err: any, _: Request, res: Response, __: NextFunction) => {
+  const statusCode = res.statusCode ? res.statusCode : 500;
+  const message = err.message ? err.message : 'unknown error occured';
+  res.status(statusCode).json({ message });
+});
 
-  app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT} in ${process.env.NODE_ENV} mode`);
-  });
-};
-
-main().catch((err) => console.log(err));
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT} in ${process.env.NODE_ENV} mode`);
+});

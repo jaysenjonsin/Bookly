@@ -42,7 +42,7 @@ const Post = ({ post }: props) => {
                   href='/'
                   style={{ textDecoration: 'none', color: 'inherit' }}
                 >
-                  <span className={s.name}>{post?.user.name}</span>
+                  <span className={s.name}>{post?.user?.name}</span>
                 </Link>
                 <span className={s.date}>1 minute ago</span>
               </div>

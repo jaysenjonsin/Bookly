@@ -1,6 +1,11 @@
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { NextFunction, Request, Response } from 'express';
-import { prisma } from '..';
+import { prisma, s3 } from '..';
 import { redis } from '..';
+import crypto from 'crypto';
+
+//crypto is built in node interface
+const randomImageName = () => crypto.randomUUID().toString();
 
 export const getPosts = async (
   req: Request,
@@ -62,10 +67,21 @@ export const addPost = async (
   res: Response,
   next: NextFunction
 ) => {
-  // express server doesnt know how to deal with multipart form data by default, so will use multer middleware
   // const { desc, img } = req.body;
-  const desc = req.body.desc;
+  const { desc } = req.body;
+  const { file } = req;
   let img;
+
+  //25:16 --> make sure to account for if user doesnt input a file later, jsut using if(file) wasn't working
+  const s3Params = {
+    Bucket: process.env.BUCKET_NAME,
+    Key: file?.originalname + randomImageName(), //must be unique: if users upload same name, it will override
+    Body: file?.buffer,
+    ContentType: file?.mimetype,
+  };
+  const command = new PutObjectCommand(s3Params);
+  await s3.send(command);
+
   try {
     if (!desc) {
       res.status(400);
@@ -74,7 +90,7 @@ export const addPost = async (
     const newPost = await prisma.post.create({
       data: {
         desc,
-        img, //this will auto set to null if no img input
+        img, //change this value to file URL or something later
         user: {
           connect: {
             id: req.session.userId,

@@ -16,6 +16,7 @@
   "license": "ISC",
   "prisma": "./src/prisma/schema.prisma",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.310.0",
     "@prisma/client": "^4.9.0",
     "@types/express-session": "^1.17.5",
     "bcrypt": "^5.1.0",

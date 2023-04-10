@@ -11,6 +11,7 @@ import likeRouter from './routes/likes';
 import postRouter from './routes/posts';
 import userRouter from './routes/users';
 import multer from 'multer';
+import { S3Client } from '@aws-sdk/client-s3';
 
 import { COOKIE_NAME, __prod__ } from './utils/constants';
 
@@ -23,6 +24,18 @@ export const prisma = new PrismaClient({
 
 const RedisStore = connectRedis(session); //configure redis so that it can use express session
 export const redis = new Redis(); //create ioredis client
+
+const bucketRegion = process.env.BUCKET_REGION;
+const bucketAccessKey = process.env.BUCKET_ACCESS_KEY;
+const bucketSecretAccessKey = process.env.BUCKET_SECRET_ACCESS_KEY;
+
+export const s3 = new S3Client({
+  credentials: {
+    accessKeyId: bucketAccessKey!,
+    secretAccessKey: bucketSecretAccessKey!,
+  },
+  region: bucketRegion,
+});
 
 const app = express();
 app.use(express.json());

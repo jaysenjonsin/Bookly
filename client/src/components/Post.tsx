@@ -12,6 +12,7 @@ import profilePic from '../../public/undraw_Reading_book_re_kqpk.png';
 import Comments from './Comments';
 import { PostType } from './Posts';
 import { AuthContext } from '../context/AuthContext';
+import moment from 'moment';
 
 type props = {
   post: PostType;
@@ -35,7 +36,9 @@ const Post = ({ post }: props) => {
                 >
                   <span className={s.name}>{post?.user?.name}</span>
                 </Link>
-                <span className={s.date}>1 minute ago</span>
+                <span className={s.date}>
+                  {moment(post.created_at).fromNow()}
+                </span>
               </div>
             </div>
             <MoreHorizIcon />

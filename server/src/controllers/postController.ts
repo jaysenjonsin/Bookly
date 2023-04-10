@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { prisma, upload } from '..';
+import { prisma } from '..';
 import { redis } from '..';
 
 export const getPosts = async (
@@ -9,8 +9,8 @@ export const getPosts = async (
 ) => {
   try {
     //response time went from 379ms - 6ms
-    const cachedPost = await redis.get(`feed-${req.session.userId}`);
-    if (cachedPost) return res.status(200).json(JSON.parse(cachedPost));
+    // const cachedPosts = await redis.get(`feed-${req.session.userId}`);
+    // if (cachedPosts) return res.status(200).json(JSON.parse(cachedPosts));
 
     const posts = await prisma.post.findMany({
       select: {
@@ -62,9 +62,10 @@ export const addPost = async (
   res: Response,
   next: NextFunction
 ) => {
-  upload.single('file');
   // express server doesnt know how to deal with multipart form data by default, so will use multer middleware
-  const { desc, img } = req.body;
+  // const { desc, img } = req.body;
+  const desc = req.body.desc;
+  let img;
   try {
     if (!desc) {
       res.status(400);
@@ -81,7 +82,8 @@ export const addPost = async (
         },
       },
     });
-    // after adding the post, need to make sure to update the redis cache as well since getPosts will be grabbing from there
+
+    // after adding the post, need to make sure to update the redis cache as well since getPosts will be grabbing from there. Alternative would be to just invalidate the redis cache by deleting the key value pair:  await redis.del(`feed-${req.session.userId}`);
     const cachedPostsString = await redis.get(`feed-${req.session.userId}`);
     if (cachedPostsString) {
       const cachedPosts = JSON.parse(cachedPostsString);
@@ -94,7 +96,6 @@ export const addPost = async (
         3600
       );
     }
-
     res.status(201).json(newPost);
   } catch (err) {
     return next(err);

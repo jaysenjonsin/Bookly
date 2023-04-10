@@ -53,12 +53,12 @@ app.use(
   })
 );
 
-const storage = multer.memoryStorage(); //create memory storage
-export const upload = multer({ storage: storage }); //create upload func that stores image to memory. use inside createPost
+export const storage = multer.memoryStorage(); //create memory storage
+// export const upload = multer({ storage: storage }); //create upload func that stores image to memory. use inside createPost
 
-app.post('api/upload', upload.single('file'), (req, res) => {
-  res.status(200).json(req.file?.filename);
-});
+// app.post('api/upload', upload.single('file'), (req, res) => {
+//   res.status(200).json(req.file?.filename);
+// });
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);

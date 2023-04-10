@@ -1,5 +1,5 @@
 import { StaticImageData } from 'next/image';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import s from '@/styles/Post.module.scss';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
@@ -11,23 +11,14 @@ import Link from 'next/link';
 import profilePic from '../../public/undraw_Reading_book_re_kqpk.png';
 import Comments from './Comments';
 import { PostType } from './Posts';
-
-// type Props = {
-//   post: {
-//     id: number;
-//     name: string;
-//     userId: number;
-//     profilePic: StaticImageData; //or maybe type string? string in backend
-//     desc: string;
-//     img: StaticImageData;
-//   }; //copy pasted type from hovering over post in the map method of Posts.tsx
-// };
+import { AuthContext } from '../context/AuthContext';
 
 type props = {
   post: PostType;
 };
 
 const Post = ({ post }: props) => {
+  const { user } = useContext(AuthContext);
   const [showComments, setShowComments] = useState(false);
   const liked = false;
   return (
@@ -51,6 +42,7 @@ const Post = ({ post }: props) => {
           </div>
           <div className={s.content}>
             <p>{post.desc}</p>
+            {/* PUT POST LINK HERE AFTER S3 */}
             <Image src={profilePic} alt='post image' />
           </div>
           <div className={s.info}>

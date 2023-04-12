@@ -22,7 +22,7 @@ const Post = ({ post }: props) => {
   const { user } = useContext(AuthContext);
   const [showComments, setShowComments] = useState(false);
   const liked = false;
-  console.log('IMAGE: ', post?.img);
+  console.log('SUPAH POST: ', post);
   return (
     <>
       <div className={s.post}>
@@ -48,6 +48,15 @@ const Post = ({ post }: props) => {
             <p>{post.desc}</p>
             {/* PUT POST LINK HERE AFTER S3 */}
             <Image src={profilePic} alt='post image' />
+            {/* {post.image_url && (
+              <Image
+                src={post.image_url}
+                width={10}
+                height={10}
+                alt='post image'
+              />
+            )} */}
+            {post.image_url && <img src={post.image_url} alt='' />}
             {/* <img src={post?.img} alt='post image' /> */}
           </div>
           <div className={s.info}>

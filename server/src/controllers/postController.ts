@@ -19,8 +19,8 @@ export const getPosts = async (
 ) => {
   try {
     //response time went from 379ms - 6ms
-    const cachedPosts = await redis.get(`feed-${req.session.userId}`);
-    if (cachedPosts) return res.status(200).json(JSON.parse(cachedPosts));
+    // const cachedPosts = await redis.get(`feed-${req.session.userId}`);
+    // if (cachedPosts) return res.status(200).json(JSON.parse(cachedPosts));
 
     const posts = await prisma.post.findMany({
       select: {
@@ -72,11 +72,19 @@ export const getPosts = async (
           expiresIn: 3600 /*1 hour */,
         });
         post.image_url = url;
+        // await prisma.post.update({
+        //   where: {
+        //     id: post.id,
+        //   },
+        //   data: {
+        //     image_url: url,
+        //   },
+        // });
       }
     }
 
     //redis.set(key(must be a string), value, EX (for expiration), expiration time in seconds)
-    redis.set(`feed-${req.session.userId}`, JSON.stringify(posts), 'EX', 3600);
+    // redis.set(`feed-${req.session.userId}`, JSON.stringify(posts), 'EX', 3600);
     res.status(200).json(posts);
   } catch (err) {
     return next(err);
@@ -91,6 +99,7 @@ export const addPost = async (
   // const { desc, img } = req.body;
   const { desc } = req.body;
   const { file } = req;
+  console.log('FILE WITH NO FILE: ', file);
   const image_name = file?.originalname + randomImageName();
   const formatedBuffer = await sharp(file?.buffer)
     .resize({ height: 1920, width: 1080, fit: 'contain' })

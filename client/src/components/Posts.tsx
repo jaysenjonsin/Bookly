@@ -22,7 +22,8 @@ export type PostType = {
   created_at: string;
   desc: string;
   id: number;
-  img: string | null | StaticImageData; //take out static img later?
+  image_name: string | null | StaticImageData; //take out static img later?
+  image_url: string | null | StaticImageData;
   updated_at: String; //maybe convert to Date type later? currently coming back as a string. maybe jsut recieve as string and turn into date using moment when displaying it?
   user: {
     id: number;

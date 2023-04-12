@@ -1,8 +1,13 @@
-import { PutObjectCommand } from '@aws-sdk/client-s3';
-import { NextFunction, Request, Response } from 'express';
-import { prisma, s3 } from '..';
-import { redis } from '..';
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+} from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import crypto from 'crypto';
+import { NextFunction, Request, Response } from 'express';
+import sharp from 'sharp';
+import { prisma, redis, s3Client } from '..';
 
 //crypto is built in node interface
 const randomImageName = () => crypto.randomUUID().toString();
@@ -14,14 +19,15 @@ export const getPosts = async (
 ) => {
   try {
     //response time went from 379ms - 6ms
-    // const cachedPosts = await redis.get(`feed-${req.session.userId}`);
-    // if (cachedPosts) return res.status(200).json(JSON.parse(cachedPosts));
+    const cachedPosts = await redis.get(`feed-${req.session.userId}`);
+    if (cachedPosts) return res.status(200).json(JSON.parse(cachedPosts));
 
     const posts = await prisma.post.findMany({
       select: {
         id: true,
         desc: true,
-        img: true,
+        image_name: true,
+        image_url: true,
         created_at: true,
         updated_at: true,
         user: {
@@ -54,6 +60,21 @@ export const getPosts = async (
       },
     });
 
+    for (const post of posts) {
+      // For each post, generate a signed URL and save it to the post object
+      if (post.image_name) {
+        const getObjectParams = {
+          Bucket: process.env.BUCKET_NAME,
+          Key: post.image_name,
+        };
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3Client, command, {
+          expiresIn: 3600 /*1 hour */,
+        });
+        post.image_url = url;
+      }
+    }
+
     //redis.set(key(must be a string), value, EX (for expiration), expiration time in seconds)
     redis.set(`feed-${req.session.userId}`, JSON.stringify(posts), 'EX', 3600);
     res.status(200).json(posts);
@@ -70,17 +91,20 @@ export const addPost = async (
   // const { desc, img } = req.body;
   const { desc } = req.body;
   const { file } = req;
-  let img;
+  const image_name = file?.originalname + randomImageName();
+  const formatedBuffer = await sharp(file?.buffer)
+    .resize({ height: 1920, width: 1080, fit: 'contain' })
+    .toBuffer();
 
   //25:16 --> make sure to account for if user doesnt input a file later, jsut using if(file) wasn't working
   const s3Params = {
     Bucket: process.env.BUCKET_NAME,
-    Key: file?.originalname + randomImageName(), //must be unique: if users upload same name, it will override
-    Body: file?.buffer,
+    Key: image_name, //must be unique: if users upload same name, it will override
+    Body: formatedBuffer /*file?.buffer,*/,
     ContentType: file?.mimetype,
   };
   const command = new PutObjectCommand(s3Params);
-  await s3.send(command);
+  await s3Client.send(command);
 
   try {
     if (!desc) {
@@ -90,7 +114,7 @@ export const addPost = async (
     const newPost = await prisma.post.create({
       data: {
         desc,
-        img, //change this value to file URL or something later
+        image_name,
         user: {
           connect: {
             id: req.session.userId,
@@ -118,4 +142,51 @@ export const addPost = async (
   }
   // const time = moment(Date.now()).format('YYY-MM-DD HH:mm:ss'); // maybe format date in the front end
   // console.log(time);
+};
+
+export const deletePost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params; //id will come back as string from req.params
+  const userId = parseInt(id);
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: userId },
+    });
+
+    if (!post) {
+      res.status(404);
+      throw new Error('post not found');
+    }
+
+    if (post.image_name) {
+      const params = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: post.image_name,
+      };
+
+      const command = new DeleteObjectCommand(params);
+      await s3Client.send(command);
+    }
+
+    await prisma.post.delete({ where: { id: userId } });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const getAllPosts = async (_: Request, res: Response) => {
+  const allPosts = await prisma.post.findMany();
+  res.status(200).json(allPosts);
+};
+
+export const deleteAllPosts = async (
+  _: Request,
+  __: Response,
+  next: NextFunction
+) => {
+  await prisma.post.deleteMany();
+  return next();
 };

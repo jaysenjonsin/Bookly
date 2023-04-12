@@ -38,7 +38,8 @@ model User {
 model Post {
   id         Int       @id @default(autoincrement())
   desc       String    @db.VarChar(400)
-  img        String?   @db.VarChar(400)
+  image_name String?   @db.VarChar(400)
+  image_url  String?   @db.VarChar(400)
   user_id    Int
   user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade) //user id field references id in User
   // prisma sets ON DELETE to RESTRICT by default

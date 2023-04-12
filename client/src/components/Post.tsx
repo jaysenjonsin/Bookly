@@ -22,6 +22,7 @@ const Post = ({ post }: props) => {
   const { user } = useContext(AuthContext);
   const [showComments, setShowComments] = useState(false);
   const liked = false;
+  console.log('IMAGE: ', post?.img);
   return (
     <>
       <div className={s.post}>
@@ -47,6 +48,7 @@ const Post = ({ post }: props) => {
             <p>{post.desc}</p>
             {/* PUT POST LINK HERE AFTER S3 */}
             <Image src={profilePic} alt='post image' />
+            {/* <img src={post?.img} alt='post image' /> */}
           </div>
           <div className={s.info}>
             <div className={s.item}>

@@ -24,7 +24,7 @@ model User {
   website     String?        @db.VarChar(50)
   created_at  DateTime       @default(now()) //SQL generated is TIMESTAMP(3), meaning this is of data type timestamp with 3 decimal precision
   updated_at  DateTime       @updatedAt
-  posts       Post[]
+  posts       Post[] //not actually creating an array in the db, just estalishing the one to many relationship for use in the prisma client
   comments    Comment[]
   stories     Story[]
   likes       Like[]

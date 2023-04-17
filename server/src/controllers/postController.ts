@@ -21,7 +21,7 @@ export const getPosts = async (
     //response time went from 379ms - 6ms
     // const cachedPosts = await redis.get(`feed-${req.session.userId}`);
     // if (cachedPosts) return res.status(200).json(JSON.parse(cachedPosts));
-
+    //maybe store everything except url in cache, make a seperate request for the URL
     const posts = await prisma.post.findMany({
       select: {
         id: true,

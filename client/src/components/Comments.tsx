@@ -12,6 +12,7 @@ type Props = {
 };
 
 const Comments = ({ post }: Props) => {
+  //get comments based on post id ? 
   const { isLoading, data } = useQuery(['comments'], fetchComments);
   const comments = [
     {

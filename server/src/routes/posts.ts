@@ -14,7 +14,7 @@ export const upload = multer({ storage: storage });
 router.route('/').get(authenticateRoute, getPosts).post(
   authenticateRoute,
   // express server doesnt know how to deal with multipart form data by default, so will use multer middleware .single
-  upload.single('file'), //file is name of the input in front end: name = 'file'. 
+  upload.single('file'), //file is name of the input in front end: name = 'file'.
   addPost
 );
 

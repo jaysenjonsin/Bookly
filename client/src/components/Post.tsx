@@ -47,7 +47,7 @@ const Post = ({ post }: props) => {
           <div className={s.content}>
             <p>{post.desc}</p>
             {/* PUT POST LINK HERE AFTER S3 */}
-            <Image src={profilePic} alt='post image' />
+            {/* <Image src={profilePic} alt='post image' /> */}
             {/* {post.image_url && (
               <Image
                 src={post.image_url}

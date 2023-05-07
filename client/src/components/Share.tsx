@@ -21,6 +21,7 @@ const Share = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<postFormSchemaType>({
     resolver: zodResolver(postFormSchema),
@@ -41,6 +42,7 @@ const Share = () => {
       formData.append('file', formInput['file'][0]);
       //axios call with form data. will have to change backend, sending form data like this does not come in req.body. also might have to consider url.encoded to true
       mutate(formData);
+      reset(); //reset form input from RHF
     } catch (err: any) {
       window.alert(err.response?.data.message);
     }

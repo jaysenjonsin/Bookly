@@ -1,3 +1,10 @@
-const commentController = {};
+import { NextFunction, Request, Response } from 'express';
 
-export default commentController;
+export const getComments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+  } catch (err) {}
+};

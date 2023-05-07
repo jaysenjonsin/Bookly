@@ -8,7 +8,6 @@ export const fetchPosts = async () => {
 
 export const createPost = async (userInput: any) => {
   const config = {
-    //not sure if headers are needed: when this works try to comment out and see if needed
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -19,3 +18,5 @@ export const createPost = async (userInput: any) => {
 
   return data;
 };
+
+

@@ -1,5 +1,5 @@
 import { StaticImageData } from 'next/image';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import s from '@/styles/Post.module.scss';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
@@ -11,25 +11,18 @@ import Link from 'next/link';
 import profilePic from '../../public/undraw_Reading_book_re_kqpk.png';
 import Comments from './Comments';
 import { PostType } from './Posts';
-
-// type Props = {
-//   post: {
-//     id: number;
-//     name: string;
-//     userId: number;
-//     profilePic: StaticImageData; //or maybe type string? string in backend
-//     desc: string;
-//     img: StaticImageData;
-//   }; //copy pasted type from hovering over post in the map method of Posts.tsx
-// };
+import { AuthContext } from '../context/AuthContext';
+import moment from 'moment';
 
 type props = {
   post: PostType;
 };
 
 const Post = ({ post }: props) => {
+  const { user } = useContext(AuthContext);
   const [showComments, setShowComments] = useState(false);
   const liked = false;
+  console.log('SUPAH POST: ', post);
   return (
     <>
       <div className={s.post}>
@@ -44,14 +37,27 @@ const Post = ({ post }: props) => {
                 >
                   <span className={s.name}>{post?.user?.name}</span>
                 </Link>
-                <span className={s.date}>1 minute ago</span>
+                <span className={s.date}>
+                  {moment(post.created_at).fromNow()}
+                </span>
               </div>
             </div>
             <MoreHorizIcon />
           </div>
           <div className={s.content}>
             <p>{post.desc}</p>
-            <Image src={profilePic} alt='post image' />
+            {/* PUT POST LINK HERE AFTER S3 */}
+            {/* <Image src={profilePic} alt='post image' /> */}
+            {/* {post.image_url && (
+              <Image
+                src={post.image_url}
+                width={10}
+                height={10}
+                alt='post image'
+              />
+            )} */}
+            {post.image_url && <img src={post.image_url} alt='' />}
+            {/* <img src={post?.img} alt='post image' /> */}
           </div>
           <div className={s.info}>
             <div className={s.item}>

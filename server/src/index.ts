@@ -11,6 +11,7 @@ import likeRouter from './routes/likes';
 import postRouter from './routes/posts';
 import userRouter from './routes/users';
 import multer from 'multer';
+import { S3Client } from '@aws-sdk/client-s3';
 
 import { COOKIE_NAME, __prod__ } from './utils/constants';
 
@@ -23,6 +24,18 @@ export const prisma = new PrismaClient({
 
 const RedisStore = connectRedis(session); //configure redis so that it can use express session
 export const redis = new Redis(); //create ioredis client
+
+const bucketRegion = process.env.BUCKET_REGION;
+const bucketAccessKey = process.env.BUCKET_ACCESS_KEY;
+const bucketSecretAccessKey = process.env.BUCKET_SECRET_ACCESS_KEY;
+
+export const s3Client = new S3Client({
+  credentials: {
+    accessKeyId: bucketAccessKey!,
+    secretAccessKey: bucketSecretAccessKey!,
+  },
+  region: bucketRegion,
+});
 
 const app = express();
 app.use(express.json());
@@ -53,12 +66,12 @@ app.use(
   })
 );
 
-const storage = multer.memoryStorage(); //create memory storage
-export const upload = multer({ storage: storage }); //create upload func that stores image to memory. use inside createPost
+export const storage = multer.memoryStorage(); //create memory storage
+// export const upload = multer({ storage: storage }); //create upload func that stores image to memory. use inside createPost
 
-app.post('api/upload', upload.single('file'), (req, res) => {
-  res.status(200).json(req.file?.filename);
-});
+// app.post('api/upload', upload.single('file'), (req, res) => {
+//   res.status(200).json(req.file?.filename);
+// });
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);

@@ -16,28 +16,21 @@ export type postFormSchemaType = z.infer<typeof postFormSchema>;
 
 const Share = () => {
   const { user } = useContext(AuthContext);
-  const { invalidateQueries } = useQueryClient();
-  const [desc, setDesc] = useState('hi');
-  const [file, setFile] = useState<any>('hi');
+  const queryClient = useQueryClient(); //destructuring invalidateQueries from useQueryClient is not working
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<postFormSchemaType>({
     resolver: zodResolver(postFormSchema),
   });
 
-  // const upload = async () => {
-  //   try {
-  //   } catch (err) {
-  //     window.alert(err);
-  //   }
-  // };
   //useMutation takes in a func that returns a func that returns promise, cant just pass in the func
   const { data, isLoading, mutate } = useMutation(createPost, {
     onSuccess: () => {
-      invalidateQueries(['posts']);
+      queryClient.invalidateQueries(['posts']);
     },
   });
 
@@ -45,20 +38,14 @@ const Share = () => {
     //onSubmit function in RHF takes in the data
     try {
       const formData = new FormData(); //create empty formData object. append to this object using formData.append(key, val). need to use this to send files in react because JSON format cannot handle file uploads
-      formData.append('desc', formInput.desc);
-      console.log('form input: ', formInput.desc);
-      console.log('file shi ', formInput.file[0]);
-      formData.append('file', formInput.file[0]);
+      formData.append('desc', formInput['desc']);
+      formData.append('file', formInput['file'][0]);
       //axios call with form data. will have to change backend, sending form data like this does not come in req.body. also might have to consider url.encoded to true
       mutate(formData);
+      reset(); //reset form input from RHF
     } catch (err: any) {
       window.alert(err.response?.data.message);
     }
-  };
-
-  const selectFile = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files![0];
-    setFile(file);
   };
   return (
     <>

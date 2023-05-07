@@ -131,4 +131,27 @@ export const logout = async (req: Request, res: Response) => {
   });
 };
 
+//if logout doesnt work try this one:
+// export const logout = async (req: Request, res: Response) => {
+//   return new Promise<boolean>((resolve, reject) => {
+//     //destroy the session(server) and clear the cookie(client)
+//     req.session.destroy((err) => {
+//       res.clearCookie(COOKIE_NAME);
+//       if (err) {
+//         console.error(err);
+//         reject(err);
+//         return;
+//       }
+//       resolve(true);
+//     });
+//   })
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((error) => {
+//       console.error(error);
+//       res.status(500).json({ message: 'Error occurred while logging out.' });
+//     });
+// };
+
 //req.session.destroy takes a callback, which has an err parameter
